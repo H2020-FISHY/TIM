@@ -1,0 +1,44 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Ansible Deploy
+host: localhost:10010
+basePath: /
+#
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /callAnsibleDeploy:
+    x-swagger-router-controller: call_ansible
+    get:
+      description: Call method that starts ansible deploy
+      operationId: callAnsibleDeploy
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/AnsibleRunnerResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  AnsibleRunnerResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
