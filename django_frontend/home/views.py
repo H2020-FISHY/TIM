@@ -2,7 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 import requests
+import json
 
+with open("../../vagrant/config/default.json", "r") as read_file:
+    config = json.load(read_file)
+    print(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
 
 # Create your views here.
 def home(request):
@@ -13,5 +17,5 @@ def home(request):
     return HttpResponse(template.render(context, request))
 
 def sendRequest(self):
-    r = requests.get("http://192.168.55.11:10010/callAnsibleDeploy")
+    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('home')

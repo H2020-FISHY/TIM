@@ -16,7 +16,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || global.config.ansibleRunner.ip;
+  var port = process.env.PORT || global.config.ansibleRunner.port;
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/callAnsibleDeploy']) {

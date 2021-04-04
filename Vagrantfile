@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
         infra.vm.hostname = "django.dev"
         infra.vm.provision "shell", inline: <<-SHELL
             sudo yum install python3 -y
-            sudo pip3 install django
+            sudo pip3 install Django
             sudo pip3 install django-crispy-forms
             sudo pip3 install requests
             sudo yum install wget -y
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload
         SHELL
         infra.vm.provider "virtualbox" do |vb|
-            vb.memory = "2048"
+            vb.memory = "1024"
         end
     end
 
@@ -41,16 +41,26 @@ Vagrant.configure("2") do |config|
         infra.vm.network "private_network", ip: "192.168.55.11"
         infra.vm.provision "shell", inline: <<-SHELL
             curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-            sudo yum groupinstall "Development Tools" -y
-            sudo yum install nodejs make -y
+            sudo yum install nodejs -y
             npm install -g swagger
             cd ../../vagrant/ansible-runner
             swagger project start
+
         SHELL
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "2048"
         end
     end
+
+    config.vm.define "testing" do |infra|
+        infra.vm.box = "centos/7"
+        infra.ssh.insert_key = false
+        infra.vm.network "private_network", ip: "192.168.55.12"
+        infra.vm.provider "virtualbox" do |vb|
+            vb.memory = "1024"
+        end
+    end
+
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
