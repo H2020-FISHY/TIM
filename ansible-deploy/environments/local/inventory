@@ -1,0 +1,11 @@
+[docker]
+127.0.0.1 ansible_connection=local
+
+[dns-server]
+127.0.0.1 ansible_connection=local
+
+[service-discovery]
+127.0.0.1 ansible_connection=local
+
+[elk]
+127.0.0.1 ansible_connection=local

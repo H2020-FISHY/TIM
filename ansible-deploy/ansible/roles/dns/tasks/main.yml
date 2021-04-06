@@ -1,0 +1,6 @@
+---
+- import_tasks: agent.yml
+  when: consul_agent is defined and consul_agent
+
+- import_tasks: server.yml
+  when: consul_server is defined and consul_server

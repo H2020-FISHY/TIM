@@ -1,0 +1,12 @@
+---
+- name: check if ca cert secret already exists
+  command: docker secret inspect ca-cert-sec
+  register: ca_cert_exists
+  ignore_errors: True
+
+- name: remove ca cert secret if it already exists
+  command: docker secret rm ca-cert-sec
+  when: ca_cert_exists is succeeded
+
+- name: create ca cert secret
+  command: docker secret create ca-cert-sec {{ ca_cert_path }}

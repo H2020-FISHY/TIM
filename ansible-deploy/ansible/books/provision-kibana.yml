@@ -1,0 +1,14 @@
+---
+- hosts: elk
+  become: yes
+  pre_tasks:
+    - import_tasks: "{{ansible_dir}}/globals/vars.yml"
+  roles:
+    - role: docker-container
+      service_name: kibana
+      service_type: 'docker'
+      service_ports:
+        - "{{ports.kibana}}:5601"
+      service_env_vars:
+        - "ELASTICSEARCH_HOSTS=http://{{elastic_host}}:{{ports.elasticsearch}}"
+      service_image: "{{images.kibana}}:{{versions.kibana}}"

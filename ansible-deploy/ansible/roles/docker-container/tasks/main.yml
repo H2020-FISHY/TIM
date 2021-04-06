@@ -1,0 +1,35 @@
+---
+- meta: end_play
+  when: dev_service is defined and dev_service and (dev_mode is not defined or not dev_mode)
+
+- name: debug
+  debug:
+    msg: "Provisioning: {{ service_name }} - {{ service_type }}"
+
+- name: set altered service name as default
+  set_fact: service_name_altered="{{ service_name }}"
+
+- name: set prefix to altered service name
+  set_fact: service_name_altered="{{ service_prefix }}{{ service_name_altered }}"
+  when: service_prefix is defined
+
+- name: set psotfix to altered service name
+  set_fact: service_name_altered="{{ service_name_altered }}{{ service_postfix }}"
+  when: service_postfix is defined
+
+- import_tasks: configs/copy-configs.yml
+
+- include_tasks: service.yml
+  when: service_type is defined and service_type == 'service'
+
+- include_tasks: docker.yml
+  when: service_type is defined and service_type == 'docker'
+
+- include_tasks: swarm.yml
+  when: service_type is defined and service_type == 'swarm'
+
+- include_tasks: k8s.yml
+  when: service_type is undefined or service_type == 'k8s'
+
+- include_tasks: k8s-helm.yml
+  when: service_type is undefined or service_type == 'k8s-helm'

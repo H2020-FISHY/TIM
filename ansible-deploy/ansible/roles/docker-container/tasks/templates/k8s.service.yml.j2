@@ -1,0 +1,302 @@
+{% if service_external_ports is defined or service_ports is defined or (service_headless is defined and service_headless) %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ service_name }}
+  labels:
+    app: {{ service_name }}
+spec:
+{% if (service_headless is defined and service_headless and service_external_ports is not defined )  %}
+  clusterIP: None
+{% endif %}
+  selector:
+    app: {{ service_name }}
+{% if service_external_ports is defined %}
+  type: NodePort
+{% endif %}
+{% if service_external_ports is defined or service_ports is defined %}
+  ports:
+{% if service_external_ports is defined %}
+{% for external_port in service_external_ports %}
+    - port: {{ external_port.port }}
+      targetPort: {{ external_port.targetPort |  default(external_port.port) }}
+      nodePort: {{ external_port.nodePort |  default(external_port.port) }}
+      protocol: {{ external_port.protocol | default('TCP') }}
+      name: "{{ external_port.name | default('port-'+(external_port.port | string)) }}"
+{% endfor %}
+{% endif %}
+{% if service_ports is defined %}
+{% for port in service_ports %}
+    - port: {{ port.port }}
+      targetPort: {{ port.targetPort |  default(port.port) }}
+      protocol: {{ port.protocol | default('TCP') }}
+      name: "{{ port.name | default('port-'+(port.port | string)) }}"
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% if (service_headless is defined and service_headless and service_external_ports is defined )  %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ service_name }}-headless
+  labels:
+    app: {{ service_name }}-headless
+spec:
+  clusterIP: None
+  selector:
+    app: {{ service_name }}
+
+{% endif %}
+---
+{% if service_kind is defined %}
+{% if service_kind=='Job' %}
+apiVersion: batch/v1
+{% else %}
+apiVersion: apps/v1
+{% endif %}
+kind: {{ service_kind }}
+{% else %}
+{% if service_volume_mounts is defined %}
+apiVersion: apps/v1
+kind: StatefulSet
+{% else %}
+apiVersion: apps/v1
+kind: Deployment
+{% endif %}
+{% endif %}
+
+metadata:
+  name: {{ service_name }}
+  labels:
+    app: {{ service_name }}
+spec:
+{% if service_volume_mounts is defined %}
+  serviceName: {{ service_name }}
+{% endif %}
+{% if service_strategy is defined %}
+  strategy:
+    type: {{ service_strategy }}
+{% endif %}
+{% if service_replicas is defined %}
+  replicas: {{ service_replicas }}
+{% endif %}
+{% if service_kind is not defined or  service_kind!='Job' %}
+  selector:
+    matchLabels:
+      app: {{ service_name }}
+{% endif %}
+  template:
+    metadata:
+      labels:
+        app: {{ service_name }}
+    spec:
+{% if service_init_containers is defined %}
+      initContainers:
+{% for service_init in service_init_containers %}
+        - name: {{ service_init.name }}
+          image: {{ service_init.image | default('busybox')}}
+          command: {{ service_init.command | map('string') | list | tojson }}
+          securityContext:
+            privileged: true
+{% if service_init.volume_mounts is defined %}
+          volumeMounts:
+{% for volume_mount in service_init.volume_mounts %}
+            - name: {{ volume_mount.name }}
+              mountPath: {{ volume_mount.mount_path }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+      imagePullSecrets:
+        - name: regcred
+{% if service_restart_policy is defined %}
+      restartPolicy: {{ service_restart_policy }}
+{% endif %}
+      dnsConfig:
+        nameservers:
+            - 8.8.8.8
+{% if service_required_node_labels is defined or (service_spread_pods_across_all_nodes is defined and service_spread_pods_across_all_nodes) %}
+      affinity:
+{% if service_required_node_labels is defined %}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+{% for service_required_node_label in service_required_node_labels %}
+              - key: {{ service_required_node_label.key }}
+                operator: In
+                values:
+{% for label in service_required_node_label.labels %}
+                - {{ label }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if service_spread_pods_across_all_nodes is defined and service_spread_pods_across_all_nodes %}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 10
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ service_name }}
+              topologyKey: "kubernetes.io/hostname"
+{% endif %}
+{% endif %}
+
+      containers:
+        - name: {{ service_name }}
+          image: {{ service_image }}
+          imagePullPolicy: Always
+#          resources:
+#{% if  service_memory_limit is defined or service_cpu_limit is defined or service_memory is defined or service_cpu is defined  %}
+#            limits:
+#{% if  service_memory_limit is defined or service_memory is defined  %}
+#              memory: "{{ service_memory_limit | default(service_memory) }}"
+#{% endif %}
+#{% if service_cpu_limit is defined or service_cpu is defined  %}
+#              cpu: "{{ service_cpu_limit | default(service_cpu) }}"
+#{% endif %}
+#{% endif %}
+#            requests:
+#              memory: "{{ service_memory_request | default(service_memory | default(default_service_memory_request)) }}"
+#              cpu: "{{ service_cpu_request | default(service_cpu | default(default_service_cpu_request)) }}"
+{% if service_external_ports is defined or service_ports is defined %}
+          ports:
+{% endif %}
+{% if service_external_ports is defined %}
+{% for external_port in service_external_ports %}
+            - containerPort:  {{ external_port.targetPort |  default(external_port.port) }}
+              name: "{{ external_port.name | default('port-'+(external_port.port|string)) }}"
+{% endfor %}
+{% endif %}
+{% if service_ports is defined %}
+{% for port in service_ports %}
+            - containerPort:  {{ port.targetPort |  default(port.port) }}
+              name: "{{ port.name | default('port-'+(port.port|string)) }}"
+{% endfor %}
+{% endif %}
+{% if service_liveness_probe is defined %}
+          livenessProbe:
+            tcpSocket:
+              port: {{ service_liveness_probe.port }}
+            initialDelaySeconds: {{ service_liveness_probe.initial_delay | default(20) }}
+            periodSeconds: {{ service_liveness_probe.period | default(10) }}
+{% endif %}
+{% if service_resources is defined %}
+          resources:
+{% if service_resources.requests is defined %}
+            requests:
+{% if service_resources.requests.cpu is defined %}
+              cpu: {{ service_resources.requests.cpu }}
+{% endif %}
+{% if service_resources.requests.memory is defined %}
+              memory: {{ service_resources.requests.memory }}
+{% endif %}
+{% endif %}
+{% if service_resources.limits is defined %}
+            limits:
+{% if service_resources.limits.cpu is defined %}
+              cpu: {{ service_resources.limits.cpu }}
+{% endif %}
+{% if service_resources.limits.memory is defined %}
+              memory: {{ service_resources.limits.memory }}
+{% endif %}
+{% endif %}
+{% endif %}
+{% if service_env_vars is defined %}
+          env:
+{% for service_env_var in service_env_vars %}
+            - name: {{ service_env_var.name }}
+{% if service_env_var.value=='k8s.metadata.name' %}
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+{% elif service_env_var.value=='k8s.status.podIP' %}
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+{% else %}
+              value: "{{ service_env_var.value }}"
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if service_command is defined %}
+          command: {{ service_command |map('string')|list|tojson}}
+{% endif %}
+
+
+{% if service_configs is defined or (service_volume_mounts  is defined )   or service_local_mounts  is defined  %}
+          volumeMounts:
+{% if service_configs is defined %}
+{% for item in service_configs %}
+            - name: {{ service_name }}-config-{{ item.id }}-volume
+              mountPath: {{ item.dst_path  | default(item.path) }}
+              subPath: {{ item.dst_path  | default(item.path) | basename }}
+{% endfor %}
+{% endif %}
+{% if service_volume_mounts is defined %}
+{% for volume_mount in service_volume_mounts %}
+            - name: {{ volume_mount.name }}
+              mountPath: {{ volume_mount.mount_path }}
+{% endfor %}
+{% endif %}
+{% if service_local_mounts is defined %}
+{% for volume_mount in service_local_mounts %}
+            - name: {{ service_name }}-local-mount-{{ volume_mount.name }}
+              mountPath: {{ volume_mount.dst_path }}
+{% endfor %}
+{% endif %}
+{% if service_configs is defined or has_volume_with_manual_pvc %}
+      volumes:
+{% if service_configs is defined %}
+{% for item in service_configs %}
+        - name: {{ service_name }}-config-{{ item.id }}-volume
+          secret:
+            secretName: {{ service_name }}-{{ item.id }}
+{% endfor %}
+{% endif %}
+{% if service_volume_mounts is defined %}
+{% for item in service_volume_mounts %}
+{% if item.pvc is defined %}
+        - name: {{ item.name }}
+          persistentVolumeClaim:
+            claimName: {{ item.pvc }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+
+{% if service_local_mounts is defined %}
+{% for volume_mount in service_local_mounts %}
+        - name: {{ service_name }}-local-mount-{{ volume_mount.name }}
+          hostPath:
+            path: {{ volume_mount.src_path }}
+{% endfor %}
+{% endif %}
+
+{% if has_volume_with_auto_pvc  %}
+  volumeClaimTemplates:
+{% for volume_mount in service_volume_mounts %}
+{% if item.pvc is not defined %}
+    - metadata:
+        name: {{ volume_mount.name }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName:  "cephfs"
+        resources:
+          requests:
+            storage: {{ volume_mount.storage  | default("500Mi")}}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}

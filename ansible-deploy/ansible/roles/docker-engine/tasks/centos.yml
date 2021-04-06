@@ -1,0 +1,24 @@
+---
+- name: Add CentOS Docker CE repository
+  yum_repository:
+    name: docker-ce-stable
+    file: docker
+    description: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+- name: Install Docker CE from repository with Yum
+  yum:
+    name: docker-ce
+    state: present
+
+- name: Copy docker service file
+  copy:
+    src: docker.service
+    dest: /usr/lib/systemd/system/docker.service
+    mode: 644
+    owner: root
+    group: root
+  when: as_system_service is defined and as_system_service

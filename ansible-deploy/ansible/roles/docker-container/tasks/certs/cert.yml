@@ -1,0 +1,24 @@
+---
+- name: check if cert-sec secret already exists
+  command: docker secret inspect cert-sec
+  register: cert_exists
+  ignore_errors: True
+
+- name: remove cer-sec secret if it already exists
+  command: docker secret rm cert-sec
+  when: cert_exists is succeeded
+
+- name: create cert-sec secret
+  command: docker secret create cert-sec {{ cert_path }}
+
+- name: check if key secret already exists
+  command: docker secret inspect cert-key-sec
+  register: key_exists
+  ignore_errors: True
+
+- name: remove key secret if it already exists
+  command: docker secret rm cert-key-sec
+  when: key_exists is succeeded
+
+- name: create key secret
+  command: docker secret create cert-key-sec {{ cert_key_path }}

@@ -4,7 +4,7 @@ const extend = require('extend');
 function startAnsible() {
     console.log("Request recieved, starting ansible deploy");
 
-    exec("cd ../../vagrant/ansible-deploy/ansible-deploy-elk && make provision", (error, stdout, stderr) => {
+    exec("cd ../../vagrant/ansible-deploy && make provision", (error, stdout, stderr) => {
     //exec("cd ../ansible-deploy/ansible-deploy-elk && make create provision", (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);

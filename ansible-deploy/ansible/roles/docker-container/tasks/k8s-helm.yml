@@ -1,0 +1,45 @@
+---
+- import_tasks: configs/k8s-secrets.yml
+
+- name: Set file var to empty
+  set_fact: file_arg=""
+
+- name: Set helm var to empty
+  set_fact: vars_arg=""
+
+- name: Set extra arguemnts to correct value
+  set_fact: vars_arg=" --set {{ service_vars |join(',') }}"
+  when: service_vars is defined
+
+- name: Set file argument to correct value
+  set_fact: file_arg=" -f {{ service_config_dir }}/{{ service_name_altered }}/{{ service_configs[0].dst_path  | default(service_configs[0].path)  | default(service_configs[0].src_path) }}"
+  when: service_configs is defined
+
+- name: Add helm repo if provided
+  become: no
+  shell: |
+    helm repo add {{ service_helm_chart_repo.name }} {{ service_helm_chart_repo.path }}
+    helm repo update
+    exit 0
+  when: service_helm_chart_repo is defined
+
+- name: Get status of helm chart
+  become: no
+  command: helm --namespace {{ k8s_namespace }}  status {{ service_name }}
+  register: helm_chart_status
+  ignore_errors: true
+  changed_when: False
+
+- name: Install stuff with helm
+  become: no
+  command: helm --namespace={{ k8s_namespace }} install {{ service_name }} {{ file_arg }} {{ vars_arg }} {{ service_helm_package }}
+  when: helm_chart_status is failed
+
+- name: Update stuff with helm
+  become: no
+  command: helm --namespace={{ k8s_namespace }} upgrade {{ service_name }} {{ file_arg }} {{ vars_arg }} {{ service_helm_package }}
+  when: helm_chart_status is succeeded
+
+- name: Wait for deployment to start
+  include_tasks: "wait-kub-pod-status.yml"
+  when: service_expected_status is defined

@@ -1,0 +1,12 @@
+---
+- name: check if consul already running
+  command: docker inspect consul-server
+  register: consul_running
+  ignore_errors: true
+
+- name: start consul
+  command: >
+          docker run -d -p 8300:8300 -p 8301:8301/tcp -p 8301:8301/udp -p 8500:8500 -p 53:8600/udp
+          --name consul-server {{ images.consul }} agent -server -bootstrap -client 0.0.0.0
+          -advertise {{ hostvars[inventory_hostname]['public_ip'] }} -recursor 8.8.8.8
+  when: consul_running is failed

@@ -1,0 +1,23 @@
+---
+stages:
+  - update_docs
+  - check
+
+ci_job_update_docs:
+  stage: update_docs
+  only:
+    - master
+  script:
+    - "rm -r ${CI_PROJECT_DIR%$CI_PROJECT_PATH}x-collection/docs || true"
+    - "git clone ssh://git@gitlab.xlab.si:13022/x-collection/docs.git ${CI_PROJECT_DIR%$CI_PROJECT_PATH}x-collection/docs"
+    - "make -C ${CI_PROJECT_DIR%$CI_PROJECT_PATH}x-collection/docs/ update-version commit-version"
+
+ci_job_qa_check:
+  stage: check
+  only:
+    - master
+  before_script:
+    - "rm -r ${CI_PROJECT_DIR%$CI_PROJECT_PATH}x-collection/tools/release-scripts || true"
+    - "git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.xlab.si/x-collection/tools/release-scripts.git ${CI_PROJECT_DIR%$CI_PROJECT_PATH}x-collection/tools/release-scripts"
+  script:
+    - make qa-check

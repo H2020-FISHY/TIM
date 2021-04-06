@@ -1,0 +1,20 @@
+---
+- name: Set expected ready to 1/1 if not set
+  set_fact:
+    service_expected_ready_status: "1/1"
+  when: service_expected_ready_status is not defined
+
+- name: Wait for k8s pods status {{ service_name }}
+  become: no
+  args:
+    executable: /bin/bash
+  shell: |
+    statuses=$(kubectl get pods --namespace {{ k8s_namespace }} | grep "{{ service_name }}-" | awk '{print $2}'  | paste -sd "" -)
+    [[ $statuses =~ ^({{ service_expected_ready_status }})+$ ]];
+    res=$?;
+    exit $res;
+  ignore_errors: yes
+  register: result
+  until: result.rc == 0
+  retries: 50
+  delay: 6

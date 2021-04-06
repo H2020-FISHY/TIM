@@ -1,0 +1,21 @@
+---
+- name: Set expected status to Running if not set
+  set_fact:
+    service_expected_status: "Running"
+  when: service_expected_status is not defined
+
+- name: Wait for k8s pods to start up {{ service_name }}
+  become: no
+  args:
+    executable: /bin/bash
+  shell: |
+    statuses=$(kubectl get pods --namespace {{ k8s_namespace }} | grep "{{ service_name }}-" | awk '{print $3}'  | paste -sd "" -)
+    [[ $statuses =~ ^({{ service_expected_status }})+$ ]];
+    res=$?;
+    echo "A${res}A":
+    exit $res;
+  ignore_errors: yes
+  register: result
+  until: result.rc == 0
+  retries: 50
+  delay: 6

@@ -1,0 +1,28 @@
+---
+- hosts: docker
+  become: yes
+  pre_tasks:
+    - import_tasks: "{{ ansible_dir }}/globals/vars.yml"
+  roles:
+    - role: docker-engine
+      as_system_service: True
+
+- hosts: dns-server
+  become: yes
+  pre_tasks:
+    - import_tasks: "{{ ansible_dir }}/globals/vars.yml"
+  roles:
+    - role: dns
+      consul_server: True
+
+- hosts: service-discovery
+  become: yes
+  pre_tasks:
+    - import_tasks: "{{ ansible_dir }}/globals/vars.yml"
+  roles:
+    - role: service-discovery
+
+- import_playbook: provision-elastic.yml
+- import_playbook: provision-kibana.yml
+- import_playbook: provision-logstash.yml
+- import_playbook: provision-runtime.yml

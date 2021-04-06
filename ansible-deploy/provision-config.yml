@@ -1,0 +1,5 @@
+---
+versions:
+  elasticsearch: 7.10.1
+  kibana: 7.10.1
+  logstash: 7.10.1

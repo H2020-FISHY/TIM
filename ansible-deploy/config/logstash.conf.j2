@@ -1,0 +1,13 @@
+#logstash.conf
+
+input {
+  syslog {
+    port => 5044
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["{{elastic_host}}:{{ports.elasticsearch}}"]
+  }
+}

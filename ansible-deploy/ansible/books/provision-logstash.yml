@@ -1,0 +1,17 @@
+---
+- hosts: elk
+  become: yes
+  pre_tasks:
+    - import_tasks: "{{ansible_dir}}/globals/vars.yml"
+  roles:
+    - role: docker-container
+      service_name: logstash
+      service_type: 'docker'
+      service_ports:
+        - "{{ports.logstash}}:5044"
+      service_env_vars:
+        - "xpack.management.elasticsearch.hosts=http://{{elastic_host}}:{{ports.elasticsearch}}"
+      service_image: "{{images.logstash}}:{{versions.logstash}}"
+      service_configs:
+        - src_path: logstash.conf.j2
+          dst_path: /usr/share/logstash/pipeline/logstash.conf
