@@ -25,9 +25,7 @@ Vagrant.configure("2") do |config|
             sudo pip3 install django-crispy-forms
             sudo pip3 install requests
             sudo yum install wget -y
-            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.8.11/1.fc21/x86_64/sqlite-devel-3.8.11-1.fc21.x86_64.rpm
-            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.8.11/1.fc21/x86_64/sqlite-3.8.11-1.fc21.x86_64.rpm
-            sudo yum install sqlite-3.8.11-1.fc21.x86_64.rpm sqlite-devel-3.8.11-1.fc21.x86_64.rpm -y
+            sudo yum install sqlite -y
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload
         SHELL
         infra.vm.provider "virtualbox" do |vb|
@@ -41,6 +39,8 @@ Vagrant.configure("2") do |config|
         infra.vm.network "private_network", ip: "192.168.55.11"
         infra.vm.provision "shell", inline: <<-SHELL
             curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+            sudo yum install epel-release -y
+            sudo yum install ansible -y
             sudo yum install nodejs -y
             npm install -g swagger
             cd ../../vagrant/ansible-runner
