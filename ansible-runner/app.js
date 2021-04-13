@@ -19,7 +19,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   var port = process.env.PORT || global.config.ansibleRunner.port;
   app.listen(port);
 
-  if (swaggerExpress.runner.swagger.paths['/callAnsibleDeploy']) {
+  if (swaggerExpress.runner.swagger.paths['/checkStatus']) {
     console.log('Swagger is up!');
   }
 });

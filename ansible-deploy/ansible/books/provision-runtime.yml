@@ -3,6 +3,7 @@
   become: yes
   pre_tasks:
     - import_tasks: "{{ansible_dir}}/globals/vars.yml"
+  roles:
     - role: daemon-change
       logstash_ip: "{{ ips.logstash }}"
-      lostash_port: "{{ ports.logstash }}"
+      logstash_port: "{{ ports.logstash }}"

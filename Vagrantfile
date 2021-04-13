@@ -21,11 +21,14 @@ Vagrant.configure("2") do |config|
         infra.vm.hostname = "django.dev"
         infra.vm.provision "shell", inline: <<-SHELL
             sudo yum install python3 -y
-            sudo pip3 install Django
+            sudo pip3 install django
             sudo pip3 install django-crispy-forms
             sudo pip3 install requests
             sudo yum install wget -y
-            sudo yum install sqlite -y
+            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-devel-3.10.0-1.fc22.x86_64.rpm
+            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm
+            sudo yum install sqlite-3.10.0-1.fc22.x86_64.rpm sqlite-devel-3.10.0-1.fc22.x86_64.rpm -y
+
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload
         SHELL
         infra.vm.provider "virtualbox" do |vb|

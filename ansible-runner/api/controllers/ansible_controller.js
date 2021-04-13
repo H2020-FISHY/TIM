@@ -11,7 +11,7 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
-var ansible = require('../helpers/start_ansible.js')
+var ansibleHelper = require('../helpers/ansible_helper.js')
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -26,7 +26,7 @@ var ansible = require('../helpers/start_ansible.js')
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  callAnsibleDeploy
+  checkStatus
 };
 
 /*
@@ -35,6 +35,16 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function callAnsibleDeploy(req, res) {
-  ansible.startAnsible();
+function checkStatus(req, res) {
+	let status = 'success';
+	if(ansibleHelper.exitCode === -1) {
+		status = 'in_progress';
+	} else if(ansibleHelper.exitCode > 0) {
+		status = 'failed';
+	}
+	let response = {
+		status,
+		output: ansibleHelper.output
+	};
+	res.json(response);
 }
