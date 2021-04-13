@@ -13,11 +13,11 @@ consumes:
 produces:
   - application/json
 paths:
-  /checkStatus:
+  /callAnsibleDeploy:
     x-swagger-router-controller: ansible_controller
     get:
       description: Call method that starts ansible deploy
-      operationId: checkStatus
+      operationId: callAnsibleDeploy
       responses:
         "200":
           description: Success

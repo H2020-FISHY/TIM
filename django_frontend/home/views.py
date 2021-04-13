@@ -17,5 +17,5 @@ def home(request):
     return HttpResponse(template.render(context, request))
 
 def sendRequest(self):
-    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/checkStatus')
+    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('home')

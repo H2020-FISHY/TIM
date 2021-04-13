@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
             wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm
             sudo yum install sqlite-3.10.0-1.fc22.x86_64.rpm sqlite-devel-3.10.0-1.fc22.x86_64.rpm -y
 
+            echo "Started django frontend"
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload
         SHELL
         infra.vm.provider "virtualbox" do |vb|
@@ -51,7 +52,7 @@ Vagrant.configure("2") do |config|
 
         SHELL
         infra.vm.provider "virtualbox" do |vb|
-            vb.memory = "2048"
+            vb.memory = "3072"
         end
     end
 
