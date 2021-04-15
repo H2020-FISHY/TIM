@@ -8,7 +8,6 @@ with open("../../vagrant/config/default.json", "r") as read_file:
     config = json.load(read_file)
     print(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
 
-# Create your views here.
 def home(request):
     template = loader.get_template('home/index.html')
     context = {
@@ -19,3 +18,10 @@ def home(request):
 def sendRequest(self):
     r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('home')
+
+def checkStatus(request):
+    template = loader.get_template('home/checkStatus.html')
+    context = {
+        'title' : 'Checking status'
+    }
+    return HttpResponse(template.render(context, request))

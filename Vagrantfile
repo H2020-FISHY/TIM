@@ -46,8 +46,10 @@ Vagrant.configure("2") do |config|
             sudo yum install epel-release -y
             sudo yum install ansible -y
             sudo yum install nodejs -y
-            npm install -g swagger
             cd ../../vagrant/ansible-runner
+            npm install -g swagger
+            npm install swagger-express-mw
+
             swagger project start
 
         SHELL
