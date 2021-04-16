@@ -26,8 +26,8 @@ var ansible = require('../helpers/ansible_helper.js')
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  checkStatus,
-  callAnsibleDeploy
+	statusCheck,
+	callAnsibleDeploy
 };
 
 /*
@@ -41,16 +41,6 @@ function callAnsibleDeploy(req, res) {
 }
   
 
-function checkStatus(req, res) {
-	let status = 'success';
-	if(ansibleHelper.exitCode === -1) {
-		status = 'in_progress';
-	} else if(ansibleHelper.exitCode > 0) {
-		status = 'failed';
-	}
-	let response = {
-		status,
-		output: ansibleHelper.output
-	};
-	res.json(response);
+function callStatusCheck(req, res) {
+	ansible.statusCheck();
 }

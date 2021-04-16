@@ -19,6 +19,10 @@ def sendRequest(self):
     r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('home')
 
+def statusRequest(self):
+    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
+    return redirect('home')
+
 def checkStatus(request):
     template = loader.get_template('home/checkStatus.html')
     context = {

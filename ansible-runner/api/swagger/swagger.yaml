@@ -27,6 +27,20 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /statusCheck:
+    x-swagger-router-controller: ansible_controller
+    get:
+      description: Call method that starts ansible deploy
+      operationId: statusCheck
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/AnsibleRunnerResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:

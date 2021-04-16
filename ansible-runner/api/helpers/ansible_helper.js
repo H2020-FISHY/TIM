@@ -20,6 +20,21 @@ function runAnsible() {
 	});
 }
 
+function statusCheck(req, res) {
+	let status = 'success';
+	if(ansibleHelper.exitCode === -1) {
+		status = 'in_progress';
+	} else if(ansibleHelper.exitCode > 0) {
+		status = 'failed';
+	}
+	let response = {
+		status,
+		output: ansibleHelper.output
+	};
+	res.json(response);
+}
+
 module.exports = {
-    runAnsible
+    runAnsible,
+	statusCheck
 };
