@@ -17,15 +17,15 @@ def home(request):
 
 def sendRequest(self):
     r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
-    return redirect('home')
-
-def statusRequest(self):
-    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
-    return redirect('home')
+    return redirect('checkStatus')
 
 def checkStatus(request):
     template = loader.get_template('home/checkStatus.html')
     context = {
         'title' : 'Checking status'
     }
-    return HttpResponse(template.render(context, request))
+
+    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck').json()
+
+    return render(requst, 'home.html', {'response' : r})
+    #return HttpResponse(template.render(context, request))
