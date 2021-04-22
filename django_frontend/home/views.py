@@ -4,6 +4,9 @@ from django.template import loader
 import requests
 import json
 
+from requests_futures.sessions import FuturesSession
+from requests import Session
+
 with open("../../vagrant/config/default.json", "r") as read_file:
     config = json.load(read_file)
     print(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
@@ -16,16 +19,32 @@ def home(request):
     return HttpResponse(template.render(context, request))
 
 def sendRequest(self):
-    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
+    session = FuturesSession()
+
+    def response_hook(resp, *args, **kwargs):
+        # parse the json storing the result on the response object
+        resp.data = resp.json()
+
+    future = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy', hooks={
+        'response': response_hook,
+    })
+
+    
+    #r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('checkStatus')
 
 def checkStatus(request):
-    template = loader.get_template('home/checkStatus.html')
+
+    session = Session()
+    r = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck')
+    r = r.content
+    #r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck').json()
+
+    template = 'home/checkStatus.html'
     context = {
-        'title' : 'Checking status'
+        'title' : 'Checking status',
+        'response' : r
     }
 
-    r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck').json()
-
-    return render(requst, 'home.html', {'response' : r})
+    return render(request, template, context)
     #return HttpResponse(template.render(context, request))

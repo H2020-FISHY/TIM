@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
             sudo pip3 install django
             sudo pip3 install django-crispy-forms
             sudo pip3 install requests
+            sudo pip3 install requests-futures
             sudo yum install wget -y
             wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-devel-3.10.0-1.fc22.x86_64.rpm
             wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm

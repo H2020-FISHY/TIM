@@ -31,7 +31,7 @@ paths:
     x-swagger-router-controller: ansible_controller
     get:
       description: Call method that starts ansible deploy
-      operationId: statusCheck
+      operationId: callStatusCheck
       responses:
         "200":
           description: Success

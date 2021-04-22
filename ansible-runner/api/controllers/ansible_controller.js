@@ -10,7 +10,6 @@
 
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
-var util = require('util');
 var ansible = require('../helpers/ansible_helper.js')
 
 /*
@@ -39,7 +38,6 @@ module.exports = {
 function callAnsibleDeploy(req, res) {
 	ansible.runAnsible();
 }
-  
 
 function callStatusCheck(req, res) {
 	ansible.statusCheck(req, res);

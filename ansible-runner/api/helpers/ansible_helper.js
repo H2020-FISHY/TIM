@@ -21,15 +21,18 @@ function runAnsible() {
 }
 
 function statusCheck(req, res) {
+	
+	console.log("Request recieved, checking status");
+
 	let status = 'success';
-	if(ansibleHelper.exitCode === -1) {
+	if(exitCode === -1) {
 		status = 'in_progress';
-	} else if(ansibleHelper.exitCode > 0) {
+	} else if(exitCode > 0) {
 		status = 'failed';
 	}
 	let response = {
 		status,
-		output: ansibleHelper.output
+		output: output
 	};
 	res.json(response);
 }
