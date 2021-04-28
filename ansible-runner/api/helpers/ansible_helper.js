@@ -6,7 +6,8 @@ function runAnsible() {
 	
 	console.log("Request recieved, starting ansible deploy");
 
-	let ansible = spawn('make', ['provision'], {cwd: '../../vagrant/ansible-deploy', env: { ENVIRONMENT: 'local'}});
+	process.env["ENVIRONMENT"] = "local"
+	let ansible = spawn('make', ['provision'], {cwd: '/vagrant/ansible-deploy', env: process.env, shell: true});
 	exitCode = -1;
 	output = '';
 	ansible.stdout.on('data', (data) => {
@@ -20,7 +21,7 @@ function runAnsible() {
 	});
 }
 
-function statusCheck(req, res) {
+function statusCheck() {
 	
 	console.log("Request recieved, checking status");
 
@@ -34,7 +35,7 @@ function statusCheck(req, res) {
 		status,
 		output: output
 	};
-	res.json(response);
+	return response;
 }
 
 module.exports = {

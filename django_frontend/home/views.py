@@ -29,8 +29,6 @@ def sendRequest(self):
         'response': response_hook,
     })
 
-    
-    #r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
     return redirect('checkStatus')
 
 def checkStatus(request):
@@ -38,7 +36,6 @@ def checkStatus(request):
     session = Session()
     r = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck')
     r = r.content
-    #r = requests.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck').json()
 
     template = 'home/checkStatus.html'
     context = {
@@ -47,4 +44,3 @@ def checkStatus(request):
     }
 
     return render(request, template, context)
-    #return HttpResponse(template.render(context, request))

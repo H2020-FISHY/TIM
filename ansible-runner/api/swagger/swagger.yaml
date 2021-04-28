@@ -30,13 +30,13 @@ paths:
   /statusCheck:
     x-swagger-router-controller: ansible_controller
     get:
-      description: Call method that starts ansible deploy
+      description: Call method that checks status of ansible deploy
       operationId: callStatusCheck
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/AnsibleRunnerResponse"
+            $ref: '#/definitions/AnsibleStatusResponse'
         default:
           description: Error
           schema:
@@ -49,6 +49,15 @@ definitions:
       - message
     properties:
       message:
+        type: string
+  AnsibleStatusResponse:
+    required:
+      - status
+      - output
+    properties:
+      status: 
+        type: string
+      output: 
         type: string
   ErrorResponse:
     required:

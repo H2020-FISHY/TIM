@@ -36,9 +36,12 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function callAnsibleDeploy(req, res) {
-	ansible.runAnsible();
+  ansible.runAnsible();
+  let response = { 'message' : 'Started ansible deploy' };
+  res.json(response);
 }
 
 function callStatusCheck(req, res) {
-	ansible.statusCheck(req, res);
+	 let response = ansible.statusCheck();
+   res.json(response);
 }
