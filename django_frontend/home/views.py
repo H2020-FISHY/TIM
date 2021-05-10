@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 import requests
 import json
+import ast
 
 from requests_futures.sessions import FuturesSession
 from requests import Session
@@ -36,11 +37,9 @@ def checkStatus(request):
     session = Session()
     r = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck')
     r = r.content
+    r = r.decode("UTF-8")
+    r = ast.literal_eval(r)
 
     template = 'home/checkStatus.html'
-    context = {
-        'title' : 'Checking status',
-        'response' : r
-    }
 
-    return render(request, template, context)
+    return render(request, template, r)

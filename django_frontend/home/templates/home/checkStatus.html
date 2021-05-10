@@ -1,10 +1,100 @@
 <DOCTYPE html>
+{% load static %}
 <html>
     <head>
         <meta charset="utf-8">
         <title>Frontend</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> 
+        <style>
+            html, body {
+                font-family: 'Nunito', sans-serif;
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            .logo {
+                height: 125px;
+            }
+
+            .navbar {
+                background-image: linear-gradient(to right, rgba(78,154,199,.5) , rgba(0,0,0,0));
+                width: 100%;
+            }
+
+            .title{
+                font-size: 1.5em;
+                font-weight: bold;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .infoCard {
+                width: 100%;
+            }
+
+            .status {
+                color: rgba(78,154,199,1);;
+                font-size: 1.2em;
+                font-weight: bold;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .status p {
+                color: black;
+                font-size: .8em;
+
+                background-color: rgba(78,154,199,1);
+                width: 70%;
+                margin: 20px;
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            .output {
+                color: black;
+                font-size: 1.2em;
+                font-weight: bold;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .output p {
+                color: white;
+                font-size: .8em;
+
+                background-color: black;
+                width: 70%;
+                margin: 20px;
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+        </style>
     </head>
     <body>
-        {{ response }}
+        <div class="navbar">
+            <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
+        </div>
+        <div class="title">Checking Status</div>
+        <div class="infoCard">
+            <div class="status">
+                STATUS
+                <p>
+                    {{ status }}
+                </p>
+            </div>
+            <div class="output">
+                OUTPUT
+                <p>
+                    {{ output }}
+                </p>
+            </div>
+        </div>
     </body>
 </html>

@@ -1,10 +1,51 @@
 <DOCTYPE html>
+{% load static %}
 <html>
     <head>
         <meta charset="utf-8">
         <title>Frontend</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> 
+        <style>
+            html, body {
+                font-family: 'Nunito', sans-serif;
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            .logo {
+                height: 125px;
+            }
+
+            .navbar {
+                background-image: linear-gradient(to right, rgba(78,154,199,.5) , rgba(0,0,0,0));
+                width: 100%;
+            }
+
+            .title{
+                font-size: 1.5em;
+                font-weight: bold;
+                padding: 20px;
+                text-align: center;
+            }
+
+            button {
+                background-color: rgba(78,154,199,1);
+                color: white;
+                border: none;
+                display: block;
+                margin: 20px auto;
+                padding: 10px 20px;
+            }
+        </style>
     </head>
     <body>
+        <div class="navbar">
+            <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
+        </div>
+        <div class="title">Appliance PoS</div>
         <button onclick="location.href='{% url 'sendRequest' %}'" type="button">Start ansible runner</button>
     </body>
 </html>
