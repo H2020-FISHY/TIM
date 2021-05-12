@@ -76,13 +76,24 @@
             }
 
         </style>
+    
+            <script>
+                //setTimeout(function(){
+                //    location.reload();
+                //},5000);
+            
+                setInterval(function() {
+                    $('#refreshThis').load({% url 'sendRequest' %});
+                },5000);
+            </script>
+
     </head>
     <body>
         <div class="navbar">
             <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
         </div>
         <div class="title">Checking Status</div>
-        <div class="infoCard">
+        <div class="infoCard" id="refreshThis">
             <div class="status">
                 STATUS
                 <p>
