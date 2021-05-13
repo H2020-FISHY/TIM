@@ -1,14 +1,11 @@
 [docker]
-127.0.0.1 ansible_connection=local
+127.0.0.1 ansible_connection=local public_ip=172.17.0.1
 
 [dns-server]
-127.0.0.1 ansible_connection=local
+127.0.0.1 ansible_connection=local public_ip=172.17.0.1
 
 [service-discovery]
-127.0.0.1 ansible_connection=local
+127.0.0.1 ansible_connection=local public_ip=172.17.0.1
 
 [elk]
-127.0.0.1 ansible_connection=local
-
-[runtime]
-127.0.0.1 ansible_connection=local
+127.0.0.1 ansible_connection=local public_ip=172.17.0.1
