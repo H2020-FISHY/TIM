@@ -8,6 +8,9 @@ import ast
 from requests_futures.sessions import FuturesSession
 from requests import Session
 
+
+# TODO: Change IPs in config file?
+
 with open("../../vagrant/config/default.json", "r") as read_file:
     config = json.load(read_file)
     print(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')

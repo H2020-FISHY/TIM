@@ -7,7 +7,7 @@ function runAnsible() {
 	console.log("Request recieved, starting ansible deploy");
 
 	process.env["ENVIRONMENT"] = "local"
-	let ansible = spawn('make', ['provision'], {cwd: '/vagrant/ansible-deploy', env: process.env, shell: true});
+	let ansible = spawn('make', ['provision'], {cwd: '/vagrant/security-monitoring/security-monitoring-ansible/', env: process.env, shell: true});
 	exitCode = -1;
 	output = '';
 	ansible.stdout.on('data', (data) => {

@@ -71,19 +71,16 @@
                 background-color: black;
                 width: 70%;
                 margin: 20px;
+                padding-bottom: 40px;
                 padding: 20px;
                 border-radius: 5px;
+
+                height: 500px;
+                overflow: auto;
+                display: flex;
+                flex-direction: column-reverse;
             }
-
         </style>
-    
-            <script>
-                setTimeout(function(){
-                    location.reload();
-                },5000);
-            
-            </script>
-
     </head>
     <body>
         <div class="navbar">
@@ -97,12 +94,18 @@
                     {{ status }}
                 </p>
             </div>
-            <div class="output">
+            <div class="output" id="output">
                 OUTPUT
                 <p>
                     {{ output | linebreaksbr}}
                 </p>
             </div>
+    
+            <script>
+                setTimeout(function(){
+                    location.reload();
+                  },2500);
+            </script>
         </div>
     </body>
 </html>
