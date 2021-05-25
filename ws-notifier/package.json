@@ -1,0 +1,15 @@
+{
+  "name": "ws-notifier",
+  "version": "1.0.0",
+  "description": "WS connector",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jan Antic",
+  "license": "ISC",
+  "dependencies": {
+    "@x-npm/rabbit": "^3.0.7",
+    "ws": "^7.4.4"
+  }
+}

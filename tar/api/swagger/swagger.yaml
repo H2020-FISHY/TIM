@@ -1,0 +1,276 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: TAR
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /api
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+  
+parameters:
+  node_id:
+    name: node_id
+    type: string
+    in: path
+    required: true
+  report_id:
+    name: report_id
+    type: string
+    in: path
+    required: true
+  
+paths:
+  /nodes:
+    x-swagger-router-controller: nodes
+    get:
+      description: lists nodes
+      operationId: listNodes
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: creates new node
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/NodeCU"
+      operationId: createNode
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /nodes/{node_id}:
+    x-swagger-router-controller: nodes
+    parameters:
+      - $ref: "#/parameters/node_id"
+    get:
+      description: gets node by id
+      operationId: getNode
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /nodes/{node_id}/status:
+    x-swagger-router-controller: nodes
+    parameters:
+      - $ref: "#/parameters/node_id"
+    put:
+      description: sets node status
+      operationId: setNodeStatus
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - status
+            properties:
+              status:
+                type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /nodes/{node_id}/reports:
+    x-swagger-router-controller: reports
+    parameters:
+      - $ref: "#/parameters/node_id"
+    get:
+      description: lists node reports
+      operationId: listReports
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: creates new node report
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ReportCU"
+      operationId: createReport
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /nodes/{node_id}/reports/{report_id}:
+    x-swagger-router-controller: reports
+    parameters:
+      - $ref: "#/parameters/node_id"
+      - $ref: "#/parameters/report_id"
+    get:
+      description: gets report by id
+      operationId: getReport
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Report"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /reports:
+    x-swagger-router-controller: reports
+    get:
+      description: lists node reports
+      operationId: listReportsStandalone
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ReportNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: creates new node report
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ReportCU"
+      operationId: createReportStandalone
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/ReportNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /reports/{report_id}:
+    x-swagger-router-controller: reports
+    parameters:
+      - $ref: "#/parameters/report_id"
+    get:
+      description: gets report by id
+      operationId: getReportStandalone
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ReportNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  NodeCU:
+    required:
+      - name
+      - status
+    properties:
+      name:
+        type: string
+      status:
+        type: string
+  
+  Node:
+    allOf:
+      - $ref: "#/definitions/NodeCU"
+      - required:
+        - id
+        properties:
+          id:
+            type: string
+            
+  ReportCU:
+    required:
+      - source
+      - data
+    properties:
+      source:
+        type: string
+      data:
+        type: string
+
+  ReportNoNode:
+    allOf:
+      - $ref: "#/definitions/ReportCU"
+      - required:
+        - id
+        properties:
+          id:
+            type: string
+
+  Report:
+    allOf:
+      - $ref: "#/definitions/ReportNoNode"
+      - required:
+        - node_id
+        properties:
+          node_id:
+            type: string
+
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string

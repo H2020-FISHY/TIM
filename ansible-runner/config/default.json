@@ -1,0 +1,8 @@
+{
+    "tar": {
+        "protocol": "http",
+        "url": "192.168.55.12",
+        "port": "10010",
+        "reports_path": "/api/reports"
+    }
+}

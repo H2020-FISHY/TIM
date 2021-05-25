@@ -20,6 +20,8 @@ Vagrant.configure("2") do |config|
         infra.vm.network "private_network", ip: "192.168.55.10"
         infra.vm.hostname = "django.dev"
         infra.vm.provision "shell", inline: <<-SHELL
+            curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+            sudo yum install nodejs -y
             sudo yum install python3 -y
             sudo pip3 install django
             sudo pip3 install django-crispy-forms
@@ -29,9 +31,18 @@ Vagrant.configure("2") do |config|
             wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-devel-3.10.0-1.fc22.x86_64.rpm
             wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm
             sudo yum install sqlite-3.10.0-1.fc22.x86_64.rpm sqlite-devel-3.10.0-1.fc22.x86_64.rpm -y
+            sudo yum install -y yum-utils
+            sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            sudo yum install docker-ce docker-ce-cli containerd.io -y
+            sudo systemctl enable docker
+            sudo systemctl start docker
+            sudo docker run -d -p 5672:5672 --name rabbit rabbitmq:alpine
+            sudo sleep 10
 
             echo "Started django frontend"
-            python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload
+            python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload &
+            node ../../vagrant/tar/app.js &
+            node ../../vagrant/ws-notifier/server.js &
         SHELL
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "1024"
@@ -47,26 +58,36 @@ Vagrant.configure("2") do |config|
             sudo yum install epel-release -y
             sudo yum install ansible -y
             sudo yum install nodejs -y
+            sudo yum install -y unzip
+            sudo yum install -y java-11-openjdk
             
             cd ../../vagrant/ansible-runner
-            npm install -g swagger
-            npm install swagger-express-mw
+            npm install
 
-            swagger project start
+            node app.js &
 
         SHELL
         infra.vm.provider "virtualbox" do |vb|
-            vb.memory = "3072"
+            vb.memory = "4096"
+            vb.cpus = "2"
         end
     end
 
-    config.vm.define "testing" do |infra|
+    config.vm.define "agent" do |infra|
         infra.vm.box = "centos/7"
         infra.ssh.insert_key = false
         infra.vm.network "private_network", ip: "192.168.55.12"
+        infra.vm.hostname = "wazuh-agent"
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "1024"
         end
+        # infra.vm.provision "shell", inline: <<-SHELL
+        #     sudo yum install -y yum-utils
+        #     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+        #     sudo yum install docker-ce docker-ce-cli containerd.io -y
+        #     sudo systemctl enable docker
+        #     sudo systemctl start docker
+        #     SHELL
     end
 
 

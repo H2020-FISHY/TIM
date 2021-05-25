@@ -1,5 +1,5 @@
 {
-  "name": "ansible-runner",
+  "name": "tar-poc",
   "version": "0.0.1",
   "private": true,
   "description": "New Swagger API Project",
@@ -8,9 +8,12 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
-    "axios": "^0.21.1",
+    "@x-npm/rabbit": "^3.0.7",
     "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "sequelize": "^6.6.2",
+    "sqlite3": "^5.0.2",
+    "swagger-express-mw": "^0.1.0",
+    "uuidv4": "^6.2.7"
   },
   "devDependencies": {
     "should": "^7.1.0",

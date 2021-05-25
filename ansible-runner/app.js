@@ -4,7 +4,7 @@ var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 const extend = require('extend');
 module.exports = app; // for testing
-global.config = extend(true, require('../config/default.json'), require('../config/config.json'));
+global.config = extend(true, require('./config/default.json'), require('./config/config.json'));
 
 var config = {
   appRoot: __dirname // required config
@@ -16,7 +16,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || global.config.ansibleRunner.port;
+  var port = process.env.PORT || 10010;
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/callAnsibleDeploy']) {
