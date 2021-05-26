@@ -40,9 +40,13 @@ Vagrant.configure("2") do |config|
             sudo sleep 10
 
             echo "Started django frontend"
+            cd /vagrant/tar
+            npm install
+            node app.js &
+            cd /vagrant/ws-notifier
+            npm install
+            node server.js &
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload &
-            node ../../vagrant/tar/app.js &
-            node ../../vagrant/ws-notifier/server.js &
         SHELL
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "1024"
@@ -60,8 +64,14 @@ Vagrant.configure("2") do |config|
             sudo yum install nodejs -y
             sudo yum install -y unzip
             sudo yum install -y java-11-openjdk
+            sudo yum install -y git
             
-            cd ../../vagrant/ansible-runner
+            cd /vagrant/security-monitoring
+            git clone https://github.com/wazuh/wazuh-ansible.git
+            cd /vagrant/security-monitoring/wazuh-ansible
+            git checkout v4.1.5
+
+            cd /vagrant/ansible-runner
             npm install
 
             node app.js &

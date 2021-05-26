@@ -95,29 +95,35 @@
         <div class="navbar">
             <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
         </div>
-        <button onclick="location.href='{% url 'sendRequest' %}'" type="button">Start ansible runner</button>
-        <div class="title">Checking Status</div>
-        <div class="infoCard" id="refreshThis">
-            <div class="status">
-                STATUS
-                <p>
-                    {{ status }}
-                </p>
-            </div>
-            <div class="output" id="output">
-                OUTPUT
-                <p>
-                    {{ output | linebreaksbr}}
-                </p>
-            </div>
-    
-            <script>
-                if(document.getElementsByClassName("status")[0].innerText.includes("in_progress")) {
-                    setTimeout(function(){
-                        location.reload();
-                    },2500);
-                }
-            </script>
+        <title>Reports</title>
+        <div>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Full Text</th>
+                    <th>Additional info</th>
+                </tr>
+                {% for el in data %}
+                <tr>
+                    <td>{{ el.data.title }}</td>
+                    <td>{{ el.data.text }}</td>
+                    <td>
+                        <table>
+                            <tr>
+                                {% for field in el.data.fields %}
+                                <th>{{ field.title }}</th>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for field in el.data.fields %}
+                                <td>{{ field.value }}</td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
         <button onclick="location.href='{% url 'home' %}'" type="button">Back</button>
     </body>

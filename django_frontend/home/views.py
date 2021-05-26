@@ -7,6 +7,7 @@ import ast
 
 from requests_futures.sessions import FuturesSession
 from requests import Session
+import json
 
 
 # TODO: Change IPs in config file?
@@ -46,3 +47,21 @@ def checkStatus(request):
     template = 'home/checkStatus.html'
 
     return render(request, template, r)
+
+def reports(request):
+
+    session = Session()
+    r = session.get(f'http://{config["tar"]["ip"]}:{config["tar"]["port"]}/api/reports')
+    r = r.content
+    r = r.decode("UTF-8")
+    r = ast.literal_eval(r)
+    data = []
+    for el in r:
+        alert = json.loads(el['data'])
+        alert = alert['attachments'][0]
+        el['data'] = alert
+        data.append(el)
+
+    template = 'home/reports.html'
+
+    return render(request, template, {'data': data})

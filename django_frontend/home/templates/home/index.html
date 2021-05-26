@@ -46,6 +46,7 @@
             <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
         </div>
         <div class="title">Appliance PoC</div>
-        <button onclick="location.href='{% url 'sendRequest' %}'" type="button">Start ansible runner</button>
+        <button onclick="location.href='{% url 'checkStatus' %}'" type="button">Deployment status</button>
+        <button onclick="location.href='{% url 'reports' %}'" type="button">View reports</button>
     </body>
 </html>
