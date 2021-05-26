@@ -1,0 +1,5 @@
+.vagrant
+wazuh-ansible/
+*.swp
+*.retry
+security-monitoring-ansible/ansible/opendistro/

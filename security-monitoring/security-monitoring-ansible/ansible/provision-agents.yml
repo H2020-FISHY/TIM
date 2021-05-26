@@ -1,0 +1,19 @@
+---
+# Agents
+  - hosts: wazuh_agents
+    become: yes
+    pre_tasks:
+    - import_tasks: "{{ ansible_dir }}/globals/vars.yml"    
+    roles:    
+      - ../../../wazuh-ansible/roles/wazuh/ansible-wazuh-agent
+      - docker
+    vars:
+      wazuh_managers:
+        - address: "{{ wazuh_manager_ip }}"
+          port: 1514
+          protocol: tcp
+          api_port: 55000
+          api_proto: 'http'
+          api_user: ansible
+          max_retries: 5
+          retry_interval: 5

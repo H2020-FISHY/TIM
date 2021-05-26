@@ -1,0 +1,6 @@
+---
+- name: Start provision of the Wazuh Managers
+  import_playbook: provision-managers.yml
+
+- name: Start provision of the Wazuh Agents
+  import_playbook: provision-agents.yml

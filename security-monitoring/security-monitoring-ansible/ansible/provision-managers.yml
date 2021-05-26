@@ -1,0 +1,31 @@
+---
+# Manager
+  - hosts: wazuh_managers
+    become: yes    
+    become_user: root
+    pre_tasks:
+    - import_tasks: "{{ ansible_dir }}/globals/vars.yml"
+    roles:
+      - role: ../../../wazuh-ansible/roles/opendistro/opendistro-elasticsearch
+      - role: ../../../wazuh-ansible/roles/wazuh/ansible-wazuh-manager
+      - role: ../../../wazuh-ansible/roles/wazuh/ansible-filebeat-oss
+      - role: ../../../wazuh-ansible/roles/opendistro/opendistro-kibana
+      - role: custom-integration
+    vars:
+      single_node: true
+      ## Set-up integrations
+      wazuh_manager_integrations:
+        # custom-integration
+        - name: custom-integration
+          hook_url: "{{ custom_integration_hook }}"
+          alert_level: "{{ custom_integration_alert_level }}"
+          alert_format: "{{ custom_integration_alert_format }}"
+      minimum_master_nodes: 1
+      elasticsearch_node_master: true
+      elasticsearch_network_host: "{{ elasticsearch_host_ip }}"
+      filebeat_node_name: node-1
+      filebeat_output_elasticsearch_hosts: "{{ elasticsearch_host_ip }}"
+      instances:
+        node1:
+          name: node-1       # Important: must be equal to elasticsearch_node_name.
+          ip: "{{ elasticsearch_host_ip }}"

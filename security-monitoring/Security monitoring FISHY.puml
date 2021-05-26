@@ -1,0 +1,28 @@
+@startuml
+participant "FISHY agent" as FISHY_agent
+participant "Security monitoring Tool (appliance runtime)" as SecurityMonitoring #99FF99 
+
+group Configure FISHY security monitoring via FISHY Agent
+    FISHY_agent->SecurityMonitoring: Configure security monitroing
+    SecurityMonitoring -> SecurityMonitoring: Configure server (rules)
+    SecurityMonitoring -> SecurityMonitoring: Configure agents (register agents, define rules)
+    SecurityMonitoring -> FISHY_agent: Security monitoring configured 
+    note over SecurityMonitoring:The server and agents should be deployed beforehand via FISHY Agent
+end
+
+group Start security monitoring
+    FISHY_agent->SecurityMonitoring: Start security monitoring 
+    SecurityMonitoring -> SecurityMonitoring : Start security monitoring
+    FISHY_agent<-SecurityMonitoring: Security monitoring started
+end
+
+group Security monitoring runtime
+    FISHY_agent<-SecurityMonitoring: Send monitoring alert
+end
+
+group Stop monitoring
+    FISHY_agent ->SecurityMonitoring: Stop security monitoring
+    SecurityMonitoring ->FISHY_agent: Security monitoring stopped
+end
+
+@enduml

@@ -1,0 +1,3 @@
+---
+- name: include globals
+  include_vars: globals.yml

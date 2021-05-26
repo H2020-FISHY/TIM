@@ -1,0 +1,32 @@
+@startuml
+participant RuntimeController
+participant RuntimeMonitoring
+participant SecurityMonitoring #99FF99
+participant DOML
+participant Selflearning
+
+group Configure security monitoring
+    RuntimeController->SecurityMonitoring: Start security monitoring configuration
+    SecurityMonitoring -> DOML: Acquire information about the NFRs to configure security monitoring
+    SecurityMonitoring -> SecurityMonitoring: Configure server (rules)
+    SecurityMonitoring -> SecurityMonitoring: Configure agents (register agents, define rules)
+    SecurityMonitoring -> RuntimeController: Security monitoring configured
+    note over SecurityMonitoring,RuntimeController:The server and agents should be deployed beforehand (included in the IaC already? Described within DOML/IaC implicitly?)
+end
+
+group Start security monitoring
+    RuntimeController->SecurityMonitoring: Start security monitoring 
+    SecurityMonitoring -> SecurityMonitoring : Start security monitoring
+    RuntimeController<-SecurityMonitoring: Security monitoring started
+end
+
+group Security monitoring runtime
+    Selflearning<-SecurityMonitoring: Send notification/alarm
+end
+
+group Stop monitoring
+    RuntimeController ->SecurityMonitoring: Start security monitoring
+    SecurityMonitoring ->RuntimeController: Security monitoring stopped
+end
+
+@enduml

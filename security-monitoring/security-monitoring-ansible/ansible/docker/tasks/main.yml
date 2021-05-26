@@ -1,0 +1,25 @@
+---
+- name: add Docker CE repository
+  yum_repository:
+    name: docker-ce-stable
+    file: docker
+    description: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+- name: create a docker group
+  group: name=docker
+
+- name: install Docker CE from repository
+  yum: name=docker-ce state=installed
+
+- name: add curent '{{ ansible_user }}' to docker groups
+  user: name={{ ansible_user }} groups=docker append=yes
+
+- name: enable docker service
+  service: name=docker enabled=yes state=started
+
+- name: reset connection to apply group permissions
+  meta: reset_connection

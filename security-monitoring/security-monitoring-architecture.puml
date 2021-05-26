@@ -1,0 +1,31 @@
+@startuml
+skinparam nodesep 5
+
+package "Wazuh Server" {
+  [Kibana server]
+  [Kibana server] --> [ElasticSearch]: KQL
+  [Wazuh cluster] --> [ElasticSearch]: Filebeat  
+}
+interface "Log collector" as LC
+interface "File integrity monitoring" as FIM
+interface "Command execution" as CE
+interface "Security configuration assessment" as SCA
+interface "Malware detection" as MD
+interface "System inventory" as SI
+interface "Cloud security monitoring" as SCM
+interface "Container security monitoring" as CSM
+
+LC -down- [Wazuh agent]
+CE -down- [Wazuh agent]
+FIM -down- [Wazuh agent]
+SCA -down- [Wazuh agent]
+
+MD -down- [Wazuh agent]
+SI -down- [Wazuh agent]
+SCM -down- [Wazuh agent]
+CSM -down- [Wazuh agent]
+
+
+[Wazuh agent] --> [Wazuh cluster]: TCP or UDP (encrypted)
+
+@enduml

@@ -1,0 +1,12 @@
+---
+- name: Add custom integration with Wazuh deployment
+  copy: src={{ item.src }} dest={{ item.dest }} owner=root group=ossec mode=0750
+  with_items:
+    - { src: 'custom-integration', dest: '/var/ossec/integrations/' }
+    - { src: 'custom-integration.py', dest: '/var/ossec/integrations/' }
+
+- name: Restart wazuh-manager
+  service:
+    name: wazuh-manager
+    state: restarted
+    enabled: true
