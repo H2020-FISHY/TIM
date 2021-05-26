@@ -6,6 +6,10 @@
         <title>Status check</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> 
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <style>
             html, body {
                 font-family: 'Nunito', sans-serif;
@@ -20,8 +24,16 @@
             }
 
             .navbar {
-                background-image: linear-gradient(to right, rgba(78,154,199,.5) , rgba(0,0,0,0));
+                background-image: linear-gradient(to right, rgba(78,120,199,.5) , rgba(0,0,0,0));
                 width: 100%;
+            }
+
+            .main-head {
+                background-color: #4e78c780;
+            }
+
+            table {
+                border: 1px solid #b0bec5;
             }
 
             .title{
@@ -55,6 +67,13 @@
                 border-radius: 5px;
             }
 
+            .text-cell {
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                max-width: 200px;
+            }
+
             .output {
                 color: black;
                 font-size: 1.2em;
@@ -82,7 +101,7 @@
             }
 
             button {
-                background-color: rgba(78,154,199,1);
+                background-color: rgba(78,120,199,1);
                 color: white;
                 border: none;
                 display: block;
@@ -95,36 +114,48 @@
         <div class="navbar">
             <img class="logo" src="{% static 'home/images/FISHY_logo_v02_final_color.svg' %}" alt="My image">
         </div>
-        <title>Reports</title>
-        <div>
-            <table>
-                <tr>
-                    <th>Description</th>
-                    <th>Full Text</th>
-                    <th>Additional info</th>
-                </tr>
+        <section class="table-content">
+            <div class="container-fluid">
+                <h1 class="title">Reports</h1>
+                <div class="row">
+                    <div class="offset-1 col-10">
+                        <table class="table table-striped">
+                            <thead class="main-head">
+                                <tr>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Full Text</th>
+                                    <th scope="col">Additional info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
                 {% for el in data %}
                 <tr>
                     <td>{{ el.data.title }}</td>
-                    <td>{{ el.data.text }}</td>
+                    <td class="text-cell">{{ el.data.text }}</td>
                     <td>
                         <table>
+                            <thead class="thead-light">
                             <tr>
                                 {% for field in el.data.fields %}
                                 <th>{{ field.title }}</th>
                                 {% endfor %}
                             </tr>
+                            </thead>
+                            <tbody>
                             <tr>
                                 {% for field in el.data.fields %}
                                 <td>{{ field.value }}</td>
                                 {% endfor %}
                             </tr>
+                        </tbody>
                         </table>
                     </td>
                 </tr>
                 {% endfor %}
-            </table>
-        </div>
+            </table></div></div></div></section>
+        
         <script>
             let websocket = new WebSocket('ws://192.168.55.10:8080');
             websocket.onmessage = () => {
