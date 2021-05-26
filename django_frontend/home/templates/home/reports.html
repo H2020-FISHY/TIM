@@ -125,6 +125,12 @@
                 {% endfor %}
             </table>
         </div>
+        <script>
+            let websocket = new WebSocket('ws://192.168.55.10:8080');
+            websocket.onmessage = () => {
+                location.reload();
+            };
+        </script>
         <button onclick="location.href='{% url 'home' %}'" type="button">Back</button>
     </body>
 </html>
