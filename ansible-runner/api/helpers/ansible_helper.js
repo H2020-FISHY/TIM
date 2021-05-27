@@ -1,6 +1,6 @@
 const {spawn} = require('child_process');
 let output = '';
-let exitCode = -1; // -1 means in progress, otherwise exit code of process
+let exitCode = -2; // -2 means not started, -1 means in progress, otherwise exit code of process
 
 function runAnsible() {
 	
@@ -26,7 +26,9 @@ function statusCheck() {
 	console.log("Request recieved, checking status");
 
 	let status = 'success';
-	if(exitCode === -1) {
+	if(exitCode === -2) {
+		status = "not_started";
+	} else if(exitCode === -1) {
 		status = 'in_progress';
 	} else if(exitCode > 0) {
 		status = 'failed';
