@@ -11,6 +11,7 @@
       - role: ../../../wazuh-ansible/roles/wazuh/ansible-filebeat-oss
       - role: ../../../wazuh-ansible/roles/opendistro/opendistro-kibana
       - role: custom-integration
+      - role: custom-rules
     vars:
       single_node: true
       ## Set-up integrations
@@ -20,6 +21,14 @@
           hook_url: "{{ custom_integration_hook }}"
           alert_level: "{{ custom_integration_alert_level }}"
           alert_format: "{{ custom_integration_alert_format }}"
+      wazuh_manager_config:
+        connection:
+          - type: syslog
+            protocol: udp
+            port: 514
+            local_ip: "{{ wazuh_manager_ip }}"
+            allowed_ips:
+              - "192.168.0.0/16"
       minimum_master_nodes: 1
       elasticsearch_node_master: true
       elasticsearch_network_host: "{{ elasticsearch_host_ip }}"

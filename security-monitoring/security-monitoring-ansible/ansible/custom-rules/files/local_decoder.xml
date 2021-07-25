@@ -1,0 +1,10 @@
+<decoder name="test">
+  <prematch>this is\s</prematch>
+</decoder>
+
+<decoder name="test">
+  <parent>test</parent>
+  <regex offset="after_parent">'(\w+)'</regex>
+  <order>extra_data</order>
+</decoder>
+

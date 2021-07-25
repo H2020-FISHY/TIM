@@ -24,8 +24,8 @@ group Security monitoring runtime
     Selflearning<-SecurityMonitoring: Send notification/alarm
 end
 
-group Stop monitoring
-    RuntimeController ->SecurityMonitoring: Start security monitoring
+group Stop security monitoring
+    RuntimeController ->SecurityMonitoring: Stop security monitoring
     SecurityMonitoring ->RuntimeController: Security monitoring stopped
 end
 
