@@ -1,6 +1,6 @@
 ---
-custom_integration_hook: 'http://10.0.2.2:8088'
+custom_integration_hook: 'http://192.168.55.11:10010/collector'
 custom_integration_alert_level: 10
 custom_integration_alert_format: 'json'
-elasticsearch_host_ip: '192.168.33.10'
-wazuh_manager_ip: '192.168.33.10'
+elasticsearch_host_ip: '192.168.55.11'
+wazuh_manager_ip: '192.168.55.11'
