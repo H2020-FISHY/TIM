@@ -1,0 +1,8 @@
+[wazuh_managers]
+127.0.0.1 ansible_connection=local public_ip=192.168.55.11 private_ip=192.168.55.11
+
+[wazuh_agents]
+192.168.55.12 public_ip=192.168.55.12 ansible_ssh_user=vagrant ansible_ssh_private_key_file=environments/local/insecure_private_key
+
+[wazuh_agents:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
