@@ -1,0 +1,39 @@
+[{
+  "uuid": "5eb27a15-3ac5-4ccd-9bc2-914aeff39ff5",
+  "timestamp": "1627224955236",
+  "type": 1,
+  "metadata": {
+    "attacker_wallet_id": "a95b460876dc460faaf271b2d3e6619e",
+    "expected_wallet_id": "21860fd049af498dba350643a279147e",
+    "device_name": "some_device"
+  }
+},
+{
+  "uuid": "94121661-343d-43ec-86f7-08fc63c50ed1",
+  "timestamp": "1627224955236",
+  "type": 2,
+  "metadata": {
+    "attacker_did": "ae79d41ae4524a3580defd9b7a78bdbc",
+    "device_name": "some_device",
+    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXN0IjoidGVzdCIsImlhdCI6MTYyNjE4MjIzN30.Zg_571ZY6lTawPegalTfwVeennBID6_9yqMzmLUlT98"
+  }
+},
+{
+  "uuid": "f056faf8-723d-4fa8-9a57-98819a1e3171",
+  "timestamp": "1627224955236",
+  "type": 3,
+  "metadata": {
+    "username": "some_user",
+    "ip": "192.168.33.16"
+  }
+},
+{
+  "uuid": "39684003-925d-446f-b395-62498b02a372",
+  "timestamp": "1627224955236",
+  "type": 4,
+  "metadata": {
+    "ip": "192.168.33.15",
+    "port": 5672,
+    "incident_type": "not_available"
+  }
+}]

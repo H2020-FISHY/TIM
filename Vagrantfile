@@ -47,6 +47,9 @@ Vagrant.configure("2") do |config|
             npm install
             node server.js &
             python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload &
+            cd /vagrant/mock-logs
+            npm install
+            node index.js &
         SHELL
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "1024"
