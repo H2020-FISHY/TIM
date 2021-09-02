@@ -2,9 +2,12 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+const extend = require('extend');
 module.exports = app; // for testing
 const db = require('./database/database');
 const { rabbitClientController } = require('@x-npm/rabbit');
+
+var conf = extend(true, require('./config/default.json'), require('./config/config.json'));
 
 var config = {
   appRoot: __dirname // required config
@@ -12,8 +15,8 @@ var config = {
 
 db.init().then(() => {
   rabbitClientController.init({
-    host: '127.0.0.1',
-    port: 5672
+    host: conf.rabbitserver_ip,
+    port: conf.rabbitserver_port
   }).then(() => {
     SwaggerExpress.create(config, function(err, swaggerExpress) {
       if (err) { throw err; }
@@ -21,7 +24,7 @@ db.init().then(() => {
       // install middleware
       swaggerExpress.register(app);
     
-      var port = process.env.PORT || 10010;
+      var port = process.env.PORT || conf.swagger_port;
       app.listen(port);
     });
   });
