@@ -1,3 +1,6 @@
+[docker]
+192.168.33.10 public_ip=192.168.33.10 ansible_ssh_pass=vagrant ansible_ssh_user=vagrant ansible_ssh_private_key_file=environments/vagrant-1manager-2agents/.vagrant/machines/manager/virtualbox/private_key
+
 [wazuh_managers]
 192.168.33.10 public_ip=192.168.33.10 ansible_ssh_pass=vagrant ansible_ssh_user=vagrant ansible_ssh_private_key_file=environments/vagrant-1manager-2agents/.vagrant/machines/manager/virtualbox/private_key
 

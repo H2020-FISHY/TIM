@@ -1,0 +1,2 @@
+SERVICE=rmq-receiver
+VERSION=v0.0.1

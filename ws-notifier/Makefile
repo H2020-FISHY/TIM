@@ -1,4 +1,6 @@
- NPMRC_CONTENT=`cat .npmrc`
+NPMRC_CONTENT=`cat .npmrc`
 
-build:
-	docker build --build-arg NPMRC_CONTENT="${NPMRC_CONTENT}" .
+-include ../image.mk
+
+run:
+	docker run --rm -d -p 8080:8080 ${SERVICE}:${VERSION}

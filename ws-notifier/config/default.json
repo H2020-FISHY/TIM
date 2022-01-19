@@ -1,5 +1,5 @@
 {
     "websocket_port" : 8080,
-    "rabbitserver_ip" : "127.0.0.1",
+    "rabbitserver_ip" : "192.168.55.10",
     "rabbitserver_port" : 5672
 }

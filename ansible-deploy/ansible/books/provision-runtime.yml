@@ -1,9 +1,0 @@
----
-- hosts: runtime
-  become: yes
-  pre_tasks:
-    - import_tasks: "{{ansible_dir}}/globals/vars.yml"
-  roles:
-    - role: daemon-change
-      logstash_ip: "{{ ips.logstash }}"
-      logstash_port: "{{ ports.logstash }}"

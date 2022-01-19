@@ -1,15 +1,16 @@
 {
-  "name": "mock-logs",
-  "version": "1.0.0",
+  "name": "rmq-receiver",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "receiver.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Jan Antic",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.8.0",
-    "extend": "^3.0.2"
+    "extend": "^3.0.2",
+    "syslog-client": "^1.1.1"
   }
 }
