@@ -117,6 +117,7 @@
         <section class="table-content">
             <div class="container-fluid">
                 <h1 class="title">Reports</h1>
+                <button onclick="location.href='{% url 'home' %}'" type="button">Back</button>
                 <div class="row">
                     <div class="offset-1 col-10">
                         <table class="table table-striped">
@@ -162,6 +163,5 @@
                 location.reload();
             };
         </script>
-        <button onclick="location.href='{% url 'home' %}'" type="button">Back</button>
     </body>
 </html>

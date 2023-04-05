@@ -13,24 +13,20 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
 
-
+    config.vbguest.auto_update = false
     config.vm.define "frontend" do |infra|
         infra.vm.box = "centos/7"
         infra.ssh.insert_key = false
         infra.vm.network "private_network", ip: "192.168.55.10"
         infra.vm.hostname = "django.dev"
         infra.vm.provision "shell", inline: <<-SHELL
-            curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-            sudo yum install nodejs -y
-            sudo yum install python3 -y
-            sudo pip3 install django
-            sudo pip3 install django-crispy-forms
-            sudo pip3 install requests
-            sudo pip3 install requests-futures
-            sudo yum install wget -y
-            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-devel-3.10.0-1.fc22.x86_64.rpm
-            wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm
-            sudo yum install sqlite-3.10.0-1.fc22.x86_64.rpm sqlite-devel-3.10.0-1.fc22.x86_64.rpm -y
+            # curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+            # sudo yum install nodejs -y
+            # sudo yum install python3 -y
+            # sudo yum install wget -y
+            # wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-devel-3.10.0-1.fc22.x86_64.rpm
+            # wget https://kojipkgs.fedoraproject.org//packages/sqlite/3.10.0/1.fc22/x86_64/sqlite-3.10.0-1.fc22.x86_64.rpm
+            # sudo yum install sqlite-3.10.0-1.fc22.x86_64.rpm sqlite-devel-3.10.0-1.fc22.x86_64.rpm -y
             sudo yum install -y yum-utils
             sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
             sudo yum install docker-ce docker-ce-cli containerd.io -y
@@ -39,14 +35,22 @@ Vagrant.configure("2") do |config|
             sudo docker run -d -p 5672:5672 --name rabbit rabbitmq:alpine
             sudo sleep 10
 
-            echo "Started django frontend"
             cd /vagrant/tar
-            npm install
-            node app.js &
+            make build
+            make run
             cd /vagrant/ws-notifier
-            npm install
-            node server.js &
-            python3 ../../vagrant/django_frontend/manage.py runserver 0.0.0.0:8000 --noreload &
+            make build
+            make run
+            cd /vagrant/django_frontend
+            make build
+            make run
+            cd /vagrant/mock-logs
+            make build
+            # make run
+            # cd /vagrant/rmq-receiver
+            # make build
+            # make run
+
         SHELL
         infra.vm.provider "virtualbox" do |vb|
             vb.memory = "1024"
@@ -58,23 +62,38 @@ Vagrant.configure("2") do |config|
         infra.ssh.insert_key = false
         infra.vm.network "private_network", ip: "192.168.55.11"
         infra.vm.provision "shell", inline: <<-SHELL
-            curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+            sudo mkdir -p /root/.ssh
+            sudo chmod 0700 /root/.ssh
+            sudo cat /vagrant/ansible-runner/id_rsa.pub >> /root/.ssh/authorized_keys
+            sudo chmod 0644 /root/.ssh/authorized_keys
+
+            # curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
             sudo yum install epel-release -y
-            sudo yum install ansible -y
-            sudo yum install nodejs -y
-            sudo yum install -y unzip
-            sudo yum install -y java-11-openjdk
+            # sudo yum install ansible -y
+            # sudo yum install nodejs -y
+            # sudo yum install -y unzip
+            # sudo yum install -y java-11-openjdk
             sudo yum install -y git
+            sudo yum install -y yum-utils
+            sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            sudo yum install docker-ce docker-ce-cli containerd.io -y
+            sudo systemctl enable docker
+            sudo systemctl start docker
             
-            cd /vagrant/security-monitoring
-            git clone https://github.com/wazuh/wazuh-ansible.git
-            cd /vagrant/security-monitoring/wazuh-ansible
-            git checkout v4.1.5
+            # cd /vagrant/security-monitoring
+            # git clone https://github.com/wazuh/wazuh-ansible.git
+            # cd /vagrant/security-monitoring/wazuh-ansible
+            # git checkout v4.1.5
+            # #cp -r /vagrant/security-monitoring/ /vagrant/ansible-runner/
 
-            cd /vagrant/ansible-runner
-            npm install
+            # # cd /vagrant/ansible-runner
+            # # npm install
 
-            node app.js &
+            # # node app.js &
+
+            # cd /vagrant/ansible-runner
+            # make build
+            # make run
 
         SHELL
         infra.vm.provider "virtualbox" do |vb|
@@ -83,22 +102,26 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    config.vm.define "agent" do |infra|
-        infra.vm.box = "centos/7"
-        infra.ssh.insert_key = false
-        infra.vm.network "private_network", ip: "192.168.55.12"
-        infra.vm.hostname = "wazuh-agent"
-        infra.vm.provider "virtualbox" do |vb|
-            vb.memory = "1024"
-        end
-        # infra.vm.provision "shell", inline: <<-SHELL
-        #     sudo yum install -y yum-utils
-        #     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        #     sudo yum install docker-ce docker-ce-cli containerd.io -y
-        #     sudo systemctl enable docker
-        #     sudo systemctl start docker
-        #     SHELL
-    end
+    # config.vm.define "agent" do |infra|
+    #     infra.vm.box = "centos/7"
+    #     infra.ssh.insert_key = false
+    #     infra.vm.network "private_network", ip: "192.168.55.12"
+    #     infra.vm.hostname = "wazuh-agent"
+    #     infra.vm.provider "virtualbox" do |vb|
+    #         vb.memory = "1024"
+    #     end
+    #     infra.vm.provision "shell", inline: <<-SHELL
+    #         sudo mkdir -p /root/.ssh
+    #         sudo chmod 0700 /root/.ssh
+    #         sudo cat /vagrant/ansible-runner/id_rsa.pub >> /root/.ssh/authorized_keys
+    #         sudo chmod 0644 /root/.ssh/authorized_keys
+    #     #     sudo yum install -y yum-utils
+    #     #     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    #     #     sudo yum install docker-ce docker-ce-cli containerd.io -y
+    #     #     sudo systemctl enable docker
+    #     #     sudo systemctl start docker
+    #         SHELL
+    # end
 
 
   # Disable automatic box update checking. If you disable this, then

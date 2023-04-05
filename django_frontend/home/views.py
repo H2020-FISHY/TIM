@@ -4,6 +4,7 @@ from django.template import loader
 import requests
 import json
 import ast
+import os
 
 from requests_futures.sessions import FuturesSession
 from requests import Session
@@ -12,9 +13,12 @@ import json
 
 # TODO: Change IPs in config file?
 
-with open("../../vagrant/config/default.json", "r") as read_file:
+module_dir = os.path.dirname(__file__)
+conf_path = os.path.join(module_dir, "../config/default.json")
+
+with open(conf_path, "r") as read_file:
     config = json.load(read_file)
-    print(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy')
+    print(f'http://{config["ansibleRunner_ip"]}:{config["ansibleRunner_port"]}/callAnsibleDeploy')
 
 def home(request):
     template = loader.get_template('home/index.html')
@@ -30,7 +34,7 @@ def sendRequest(self):
         # parse the json storing the result on the response object
         resp.data = resp.json()
 
-    future = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/callAnsibleDeploy', hooks={
+    future = session.get(f'http://{config["ansibleRunner_ip"]}:{config["ansibleRunner_port"]}/callAnsibleDeploy', hooks={
         'response': response_hook,
     })
 
@@ -39,7 +43,7 @@ def sendRequest(self):
 def checkStatus(request):
 
     session = Session()
-    r = session.get(f'http://{config["ansibleRunner"]["ip"]}:{config["ansibleRunner"]["port"]}/statusCheck')
+    r = session.get(f'http://{config["ansibleRunner_ip"]}:{config["ansibleRunner_port"]}/statusCheck')
     r = r.content
     r = r.decode("UTF-8")
     r = ast.literal_eval(r)
@@ -51,7 +55,7 @@ def checkStatus(request):
 def reports(request):
 
     session = Session()
-    r = session.get(f'http://{config["tar"]["ip"]}:{config["tar"]["port"]}/api/reports')
+    r = session.get(f'http://{config["tar_ip"]}:{config["tar_port"]}/api/reports')
     r = r.content
     r = r.decode("UTF-8")
     r = ast.literal_eval(r)

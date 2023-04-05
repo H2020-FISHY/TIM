@@ -41,7 +41,8 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /collector:
+
+  /collector/wazuh:
     x-swagger-router-controller: collector
     post:
       description: hook URL for Wazuh alerts
@@ -59,6 +60,30 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /collector/{source}:
+    x-swagger-router-controller: collector
+    post:
+      description: hook URL for alerts
+      operationId: createReport
+      parameters:
+        - name: source
+          in: path
+          type: string
+          required: true
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Success
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:

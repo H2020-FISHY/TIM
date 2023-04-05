@@ -1,8 +1,12 @@
 const WebSocket = require('ws');
+const extend = require('extend');
 const { rabbitServerController, rabbitHelpers, StatusDefinition } = require('@x-npm/rabbit');
 // console.log(StatusDefinition.STATUS_SUCCESS);
+
+var conf = extend(true, require('./config/default.json'), require('./config/config.json'));
+
 let clients = [];
-let wss = new WebSocket.Server({ port: 8080 });
+let wss = new WebSocket.Server({ port: conf.websocket_port });
 
 function taskHandler(task) {
     let id = task.id;
@@ -16,11 +20,11 @@ function taskHandler(task) {
     // rabbitServerController.sendStatus(status);
 }
 
-rabbitServerController.init({
-    host: '127.0.0.1',
-    port: 5672
+rabbitServerController.init({ 
+    host: conf.rabbitserver_ip,
+    port: conf.rabbitserver_port
 }, {
-    task_bindings: ['nodes.#'],
+    task_bindings: ['nodes.#', 'reports.#'],
     handler: taskHandler
 }).then(() => {
     wss.on('connection', function(ws) {

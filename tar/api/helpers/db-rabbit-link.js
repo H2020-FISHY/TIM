@@ -1,5 +1,5 @@
 const { rabbitClientController, rabbitHelpers } = require('@x-npm/rabbit');
-const { Report, Node } = require('../../database/models');
+const { Report, Node, Policy, CefReport, MsplConfig } = require('../../database/models');
 
 async function createReport(nodeId, source, data) {
     let report;
@@ -9,7 +9,11 @@ async function createReport(nodeId, source, data) {
     else {
         report = await Report.createReport(nodeId, source, data);
     }
-    let task = rabbitHelpers.createTask('nodes.reports', {
+    let taskName = 'nodes.reports';
+    if(!nodeId) {
+        taskName = 'reports.create';
+    }
+    let task = rabbitHelpers.createTask(taskName, {
         nodeId,
         report: {
             source,
@@ -39,8 +43,42 @@ async function createNode(name, status) {
     return node;
 }
 
+async function createPolicy(source, status, timestamp, HSPL, attackInfo) {
+    let policy = await Policy.createPolicy(source, status, timestamp, HSPL, attackInfo);
+    let task = rabbitHelpers.createTask('policies.create', policy);
+    rabbitClientController.sendTaskDontWait(task);
+    return policy;
+}
+
+async function deletePolicy(policyId) {
+    let policy = await Policy.deletePolicy(policyId);
+    if(policy) {
+        let task = rabbitHelpers.createTask('policies.delete', policy);
+        rabbitClientController.sendTaskDontWait(task);
+        return policy;
+    }
+}
+
+async function createCefReport(device_product, device_version, event_name, device_event_class_id, severity, extensions_list) {
+    let cefReport = await CefReport.createCefReport(device_product, device_version, event_name, device_event_class_id, severity, extensions_list);
+    let task = rabbitHelpers.createTask('reports.create.cef', cefReport);
+    rabbitClientController.sendTaskDontWait(task);
+    return cefReport;
+}
+
+async function createMsplConfig(type, source, status, timestamp, data) {
+    let msplconfig = await MsplConfig.createMsplConfig(type, source, status, timestamp, data);
+    let task = rabbitHelpers.createTask(`${type}.create`, msplconfig);
+    rabbitClientController.sendTaskDontWait(task);
+    return msplconfig;
+}
+
 module.exports = {
     createReport,
     updateNodeStatus,
-    createNode
+    createNode,
+    createPolicy,
+    deletePolicy,
+    createCefReport,
+    createMsplConfig
 };

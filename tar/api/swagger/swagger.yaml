@@ -29,6 +29,21 @@ parameters:
     type: string
     in: path
     required: true
+  policy_id:
+    name: policy_id
+    type: string
+    in: path
+    required: true
+  mspl_id:
+    name: mspl_id
+    type: string
+    in: path
+    required: true
+  configuration_id:
+    name: configuration_id
+    type: string
+    in: path
+    required: true
   
 paths:
   /nodes:
@@ -216,7 +231,239 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      
+  /reports/v2:
+    x-swagger-router-controller: reports
+    get:
+      description: lists node reports
+      operationId: listReportsCEFStandalone
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ReportCEFNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: creates new node report
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ReportCEFCU"
+      operationId: createReportCEFStandalone
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/ReportCEFNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /reports/v2/{report_id}:
+    x-swagger-router-controller: reports
+    parameters:
+      - $ref: "#/parameters/report_id"
+    get:
+      description: gets report by id
+      operationId: getReportCEFStandalone
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ReportCEFNoNode"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /policies:
+    x-swagger-router-controller: policies
+    get:
+      description: gets list of policies
+      operationId: listPolicies
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Policy"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create a new policy
+      operationId: createPolicy
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PolicyCU"
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: "#/definitions/Policy"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /policies/{policy_id}:
+    x-swagger-router-controller: policies
+    parameters:
+      - $ref: "#/parameters/policy_id"
+    get:
+      description: gets policy
+      operationId: getPolicy
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Policy"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: deletes policy
+      operationId: deletePolicy
+      responses:
+        "204":
+          description: Success
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /mspl:
+    x-swagger-router-controller: msplconfig
+    get:
+      description: get list of medium level policies
+      operationId: listMspl
+      responses:
+        "200":
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/MSPL"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create a new medium level policy
+      operationId: createMspl
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/MSPLCU"
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: "#/definitions/MSPL"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /mspl/{mspl_id}:
+    x-swagger-router-controller: msplconfig
+    parameters:
+      - $ref: "#/parameters/mspl_id"
+    get:
+      description: gets medium level policy
+      operationId: getMspl
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/MSPL"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: deletes medium level policy
+      operationId: deleteMspl
+      responses:
+        "204":
+          description: Success
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /configurations:
+    x-swagger-router-controller: msplconfig
+    get:
+      description: get list of configurations
+      operationId: listConfigurations
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/Configuration"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create a new medium level policy
+      operationId: createConfiguration
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ConfigurationCU"
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: "#/definitions/Configuration"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /configurations/{configuration_id}:
+    x-swagger-router-controller: msplconfig
+    parameters:
+      - $ref: "#/parameters/configuration_id"
+    get:
+      description: gets configuration
+      operationId: getConfiguration
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Configuration"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: deletes configuration
+      operationId: deleteConfiguration
+      responses:
+        "204":
+          description: Success
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+          
+
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -258,6 +505,35 @@ definitions:
         properties:
           id:
             type: string
+            
+  ReportCEFCU:
+    required:
+      - device_product
+      - event_name
+      - device_event_class_id
+      - severity
+    properties:
+      device_product:
+        type: string
+      device_version:
+        type: string
+      event_name:
+        type: string
+      device_event_class_id:
+        type: string
+      severity:
+        type: string
+      extensions_list:
+        type: string
+
+  ReportCEFNoNode:
+    allOf:
+      - $ref: "#/definitions/ReportCEFCU"
+      - required:
+        - id
+        properties:
+          id:
+            type: string
 
   Report:
     allOf:
@@ -266,6 +542,88 @@ definitions:
         - node_id
         properties:
           node_id:
+            type: string
+
+  PolicyCU:
+    required:
+      - source
+      - status
+      - timestamp
+    properties:
+      source:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      HSPL:
+        type: string
+      attack_info:
+        properties:
+          name:
+            type: string
+          type:
+            type: string
+          location:
+            type: string
+
+  Policy:
+    allOf:
+      - $ref: "#/definitions/PolicyCU"
+      - required:
+        - id
+        properties:
+          id:
+            type: string
+            
+  MSPLCU:
+    required:
+      - source
+      - status
+      - timestamp
+      - data
+    properties:
+      source:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      data:
+        type: string
+        
+  MSPL:
+    allOf:
+      - $ref: "#/definitions/MSPLCU"
+      - required:
+        - id
+        properties:
+          id:
+            type: string
+        
+  ConfigurationCU:
+    required:
+      - source
+      - status
+      - timestamp
+      - data
+    properties:
+      source:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      data:
+        type: string
+        
+  Configuration:
+    allOf:
+      - $ref: "#/definitions/ConfigurationCU"
+      - required:
+        - id
+        properties:
+          id:
             type: string
 
   ErrorResponse:
