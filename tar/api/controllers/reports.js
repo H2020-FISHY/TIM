@@ -33,7 +33,8 @@ function createReport(req, res) {
 }
 
 function listReportsStandalone(req, res) {
-  Report.listReportsStandalone()
+  let pilot = req.swagger.params.pilot.value;
+  Report.listReportsStandalone(pilot)
     .then((reports) => {
       res.json(reports);
     });
@@ -41,7 +42,10 @@ function listReportsStandalone(req, res) {
 
 
 function listReportsCEFStandalone(req, res) {
-  CefReport.listCefReports()
+  let device_product = req.swagger.params.device_product.value;
+  let device_version = req.swagger.params.device_version.value;
+  let pilot = req.swagger.params.pilot.value;
+  CefReport.listCefReports(device_product, device_version, pilot)
     .then((reports) => {
       res.json(reports);
     });

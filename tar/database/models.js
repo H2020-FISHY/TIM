@@ -6,7 +6,8 @@ let Report;
 let Policy;
 let AttackInfo;
 let CefReport;
-let MsplConfig;
+let Mspl;
+let Config;
 
 async function init(sequelize) {
   Node = sequelize.define('Node', {
@@ -158,18 +159,11 @@ async function init(sequelize) {
     updatedAt: 'updated_at'
   });
 
-  MsplConfig = sequelize.define('MsplConfig', {
+  Mspl = sequelize.define('Mspl', {
     id: {
       type: DataTypes.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isIn: [['mspl', 'configuration']]
-      }
     },
     source: {
       type: DataTypes.STRING,
@@ -186,6 +180,42 @@ async function init(sequelize) {
     data: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    policy_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
+  }, {
+    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  });
+
+  Config = sequelize.define('Config', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: Sequelize.UUIDV4,
+      primaryKey: true
+    },
+    source: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    timestamp: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    data: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    mspl_id: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     underscored: true,
@@ -198,7 +228,8 @@ async function init(sequelize) {
   await Policy.sync();
   await AttackInfo.sync();
   await CefReport.sync();
-  await MsplConfig.sync();
+  await Mspl.sync();
+  await Config.sync();
 }
 
 async function createNode(name, status) {
@@ -257,8 +288,8 @@ async function listReports(nodeId) {
   return reports;
 }
 
-async function listReportsStandalone() {
-  let reports = await Report.findAll({
+async function listReportsStandalone(pilot) {
+  let options = {
     where: {
       node_id: null
     },
@@ -266,7 +297,13 @@ async function listReportsStandalone() {
     attributes: {
       exclude: ['node_id']
     }
-  });
+  }
+
+  if(pilot && pilot.length) {
+    options.where.pilot = pilot;
+  }
+
+  let reports = await Report.findAll(options);
   return reports;
 }
 
@@ -388,29 +425,44 @@ async function getCefReport(id) {
   return cefReport;
 }
 
-async function listCefReports() {
-  let cefReports = await CefReport.findAll({
+async function listCefReports(device_product, device_version, pilot) {
+  let options = {
     order: [['created_at', 'DESC']],
     attributes: {
       exclude: ['created_at', 'updated_at']
     }
-  });
+  };
+  if(device_product && device_product.length) {
+    options.where = {
+      device_product
+    };
+  }
+  if(device_version && device_version.length) {
+    options.where = options.where || {};
+    options.where.device_version = device_version;
+  }
+  if(pilot && pilot.length) {
+    options.where = options.where || {};
+    options.where.pilot = pilot;
+  }
+
+  let cefReports = await CefReport.findAll(options);
   return cefReports;
 }
 
-async function createMsplConfig(type, source, status, timestamp, data) {
-  let msplconfig = await MsplConfig.create({
-    type,
+async function createMspl(source, status, timestamp, data, policyId) {
+  let mspl = await Mspl.create({
     source,
     status,
     timestamp,
-    data
+    data,
+    policy_id: policyId
   });
-  return await getMsplConfig(msplconfig.id);
+  return await getMspl(mspl.id);
 }
 
-async function getMsplConfig(id) {
-  let msplconfig = await MsplConfig.findOne({
+async function getMspl(id) {
+  let mspl = await Mspl.findOne({
     where: {
       id
     },
@@ -418,28 +470,73 @@ async function getMsplConfig(id) {
       exclude: ['created_at', 'updated_at', 'type']
     }
   });
-  return msplconfig;
+  return mspl;
 }
 
-async function listMsplConfig(type) {
-  if(!type || !type.length) {
-    throw new Error('Type is required');
+async function listMspl(policyId) {
+  let options = {
+    attributes: {
+      exclude: ['created_at', 'updated_at', 'type']
+    }
+  };
+  if(policyId && policyId.length) {
+    options.where = {
+      policy_id: policyId
+    }
+  };
+  let mspls = await Mspl.findAll(options);
+  return mspls;
+}
+
+async function deleteMspl(id) {
+  let mspl = await getMspl(id);
+  if(mspl) {
+    await mspl.destroy();
   }
-  let msplconfigs = await MsplConfig.findAll({
+}
+
+async function createConfig(source, status, timestamp, data, msplId) {
+  let config = await Config.create({
+    source,
+    status,
+    timestamp,
+    data,
+    mspl_id: msplId
+  });
+  return await getConfig(config.id);
+}
+
+async function getConfig(id) {
+  let config = await Config.findOne({
     where: {
-      type
+      id
     },
     attributes: {
       exclude: ['created_at', 'updated_at', 'type']
     }
   });
-  return msplconfigs
+  return config;
 }
 
-async function deleteMsplConfig(id) {
-  let msplconfig = await getMsplConfig(id);
-  if(msplconfig) {
-    await msplconfig.destroy();
+async function listConfig(msplId) {
+  let options = {
+    attributes: {
+      exclude: ['created_at', 'updated_at', 'type']
+    }
+  };
+  if(msplId && msplId.length) {
+    options.where = {
+      mspl_id: msplId
+    }
+  };
+  let configs = await Config.findAll(options);
+  return configs;
+}
+
+async function deleteConfig(id) {
+  let config = await getConfig(id);
+  if (config) {
+    await config.destroy();
   }
 }
 
@@ -470,10 +567,16 @@ module.exports = {
     getCefReport,
     listCefReports
   },
-  MsplConfig: {
-    createMsplConfig,
-    listMsplConfig,
-    getMsplConfig,
-    deleteMsplConfig
+  Mspl: {
+    createMspl,
+    listMspl,
+    getMspl,
+    deleteMspl
+  },
+  Config: {
+    createConfig,
+    listConfig,
+    getConfig,
+    deleteConfig
   }
 };

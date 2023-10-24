@@ -80,20 +80,20 @@ Vagrant.configure("2") do |config|
             sudo systemctl enable docker
             sudo systemctl start docker
             
-            # cd /vagrant/security-monitoring
-            # git clone https://github.com/wazuh/wazuh-ansible.git
-            # cd /vagrant/security-monitoring/wazuh-ansible
-            # git checkout v4.1.5
-            # #cp -r /vagrant/security-monitoring/ /vagrant/ansible-runner/
-
-            # # cd /vagrant/ansible-runner
-            # # npm install
-
-            # # node app.js &
+            cd /vagrant/security-monitoring
+            git clone https://github.com/wazuh/wazuh-ansible.git
+            cd /vagrant/security-monitoring/wazuh-ansible
+            git checkout v4.1.5
+            #cp -r /vagrant/security-monitoring/ /vagrant/ansible-runner/
 
             # cd /vagrant/ansible-runner
-            # make build
-            # make run
+            # npm install
+
+            # node app.js &
+
+            cd /vagrant/ansible-runner
+            make build
+            make run
 
         SHELL
         infra.vm.provider "virtualbox" do |vb|

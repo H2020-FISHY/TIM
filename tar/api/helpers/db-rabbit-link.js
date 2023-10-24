@@ -1,5 +1,5 @@
 const { rabbitClientController, rabbitHelpers } = require('@x-npm/rabbit');
-const { Report, Node, Policy, CefReport, MsplConfig } = require('../../database/models');
+const { Report, Node, Policy, CefReport, Mspl, Config } = require('../../database/models');
 
 async function createReport(nodeId, source, data) {
     let report;
@@ -66,11 +66,18 @@ async function createCefReport(device_product, device_version, event_name, devic
     return cefReport;
 }
 
-async function createMsplConfig(type, source, status, timestamp, data) {
-    let msplconfig = await MsplConfig.createMsplConfig(type, source, status, timestamp, data);
-    let task = rabbitHelpers.createTask(`${type}.create`, msplconfig);
+async function createMspl(source, status, timestamp, data, policyId) {
+    let mspl = await Mspl.createMspl(source, status, timestamp, data, policyId);
+    let task = rabbitHelpers.createTask(`mspl.create`, mspl);
     rabbitClientController.sendTaskDontWait(task);
-    return msplconfig;
+    return mspl;
+}
+
+async function createConfig(source, status, timestamp, data, msplId) {
+    let config = await Config.createConfig(source, status, timestamp, data, msplId);
+    let task = rabbitHelpers.createTask(`configuration.create`, config);
+    rabbitClientController.sendTaskDontWait(task);
+    return config;
 }
 
 module.exports = {
@@ -80,5 +87,6 @@ module.exports = {
     createPolicy,
     deletePolicy,
     createCefReport,
-    createMsplConfig
+    createMspl,
+    createConfig
 };

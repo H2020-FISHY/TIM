@@ -32,7 +32,7 @@
             port: 514
             local_ip: "{{ wazuh_manager_ip }}"
             allowed_ips:
-              - "10.44.0.0/16"
+              - "192.168.0.0/16"
       minimum_master_nodes: 1
       elasticsearch_node_master: true
       elasticsearch_network_host: "{{ elasticsearch_host_ip }}"

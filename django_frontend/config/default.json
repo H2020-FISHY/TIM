@@ -1,0 +1,8 @@
+{
+    "frontend_ip" : "192.168.55.10",
+    "frontend_port" : 8000,
+    "ansibleRunner_ip" : "192.168.55.11",
+    "ansibleRunner_port" : 10010,
+    "tar_ip": "192.168.55.10",
+    "tar_port": 10010
+}

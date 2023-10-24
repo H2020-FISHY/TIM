@@ -1,0 +1,58 @@
+<group name="SYN">
+  <rule id="300001" level="0">
+    <decoded_as>json</decoded_as>
+    <field name="uuid">\.+</field>
+    <field name="timestamp">\.+</field>
+    <field name="type">\.+</field>
+    <!-- <field name="metadata.\.+">\.+</field> this doesn't work, because it's nested, check how to work around this, if possible -->
+    <description>Synelixsis log</description>
+  </rule>
+
+  <!-- <rule id="300002" level="3">
+    <if_sid>300001</if_sid>
+    <field name="type">1</field>
+    <description>Synelixsis unauthorized device, wallet ID level. $(metadata.attacker_wallet_id), name: $(metadata.device_name), expected wallet id: $(metadata.expected_wallet_id)</description>
+  </rule>
+
+  <rule id="30003" frequency="5" timeframe="7200" level="10">
+    <if_matched_sid>300002</if_matched_sid>
+    <same_field>metadata.attacker_wallet_id</same_field>
+    <description>Device $(metadata.device_name) has tried to log in with wrong wallet ID 5 times in 2 hours</description>
+  </rule> -->
+
+  <rule id="300004" level="3">
+    <if_sid>300001</if_sid>
+    <field name="type">2</field>
+    <description>Synelixsis unauthorized device, DID level. $(metadata.attacker_did), name: $(metadata.device_name), token: $(metadata.token)</description>
+  </rule>
+
+  <rule id="30005" frequency="10" timeframe="7200" level="10">
+    <if_matched_sid>300004</if_matched_sid>
+    <same_field>metadata.attacker_did</same_field>
+    <description>Synelixis: Device $(metadata.device_name) has tried to log in 10 times in 2 hours</description>
+  </rule>
+
+  <rule id="300006" level="3">
+    <if_sid>300001</if_sid>
+    <field name="type">3</field>
+    <description>Synelixsis unauthorized user, IP level. $(metadata.user) from $(metadata.ip)</description>
+  </rule>
+  
+  <rule id="300007" frequency="15" timeframe="7200" level="10">
+    <if_matched_sid>300006</if_matched_sid>
+    <same_field>metadata.ip</same_field>
+    <description>Synelixis: User $(metadata.user) has tried to log in 15 times in 2 hours from $(metadata.ip)</description>
+  </rule>
+
+  <!-- <rule id="300008" level="3">
+    <if_sid>300001</if_sid>
+    <field name="type">4</field>
+    <description>Synelixsis blockchain attack, IP level. Source: $(metadata.src_ip), node: $(metadata.target_ip), port: $(metadata.target_port), incident: $(metadata.message)</description>
+  </rule>
+
+  <rule id="30009" frequency="6" timeframe="7200" level="10">
+    <if_matched_sid>300008</if_matched_sid>
+    <same_field>metadata.src_ip</same_field>
+    <description>Blockchain node $(metadata.src_ip) has recorded an incident 6 times in 2 hours</description>
+  </rule> -->
+</group>

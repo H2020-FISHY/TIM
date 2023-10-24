@@ -1,0 +1,58 @@
+[{
+  "uuid": "70511435-ba39-4947-b094-1f6355706a7b",
+  "type": 2,
+  "timestamp": "2022-01-26T10:56:36Z",
+  "metadata": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIweDk5MjQ1YTkyOTAyOUQ4YjVGNkMxMmI3ZDgwMTU4ZjcxZkFDMTkxOTgifQ._iYM8auw-Ewq32MFSW1lF5C965iJNLIY75mcCD9Dc34",
+    "device_name": "AberonIoT",
+    "attacker_did": "9XFFSoIjt7ehKPARh8XcNt"
+  }
+},
+{
+  "uuid": "bc8edad7-079c-497c-9f4a-0875732891e8",
+  "type": 3,
+  "timestamp": "2022-01-26T10:57:36Z",
+  "metadata": {
+    "ip": "163.23.164.166",
+    "user": "user"
+  }
+},
+{
+  "uuid": "efa57620-46cd-43de-9d00-acfecb5fca37",
+  "type": 1,
+  "timestamp": "2022-01-26T10:58:36Z",
+  "metadata": {
+    "device_name": "SynFieldIoT",
+    "attacker_wallet_id": "0x8a52eB2AF2e2E0C70ac10EAfE941ac996c6D3BcD",
+    "expected_wallet_id": "0xb5707BdcD820694303496B74d56895902a009943"
+  }
+},
+{
+  "uuid": "7e81637e-cb97-4975-97b9-c7143ee1f23b",
+  "type": 2,
+  "timestamp": "2022-01-26T10:59:36Z",
+  "metadata": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIweDk5MjQ1YTkyOTAyOUQ4YjVGNkMxMmI3ZDgwMTU4ZjcxZkFDMTkxOTgifQ._iYM8auw-Ewq32MFSW1lF5C965iJNLIY75mcCD9Dc34",
+    "device_name": "AberonIoT",
+    "attacker_did": "mjjls34UQxVdvxEETyMhLD"
+  }
+},
+{
+  "uuid": "ff7a3b94-b932-42ba-8c4b-5ddde7e10bce",
+  "type": 4,
+  "timestamp": "2022-01-26T11:00:36Z",
+  "metadata": {
+    "src_ip": "109.178.218.0",
+    "message": "FISHY Blockchain Suspicious Access Attempt",
+    "facility": "syslogd",
+    "priority": 4,
+    "protocol": "TCP",
+    "src_port": 8255,
+    "interface": null,
+    "target_ip": "83.235.169.221",
+    "timestamp": "2022-01-26T11:00:36Z",
+    "target_port": 37545,
+    "classification": "A TCP connection was detected",
+    "application_name": "suricata"
+  }
+}]

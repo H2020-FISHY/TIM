@@ -44,6 +44,26 @@ parameters:
     type: string
     in: path
     required: true
+  q_mspl_id:
+    name: mspl_id
+    type: string
+    in: query
+  q_policy_id:
+    name: policy_id
+    type: string
+    in: query
+  device_product:
+    name: device_product
+    type: string
+    in: query
+  device_version:
+    name: device_version
+    type: string
+    in: query
+  pilot:
+    name: pilot
+    type: string
+    in: query
   
 paths:
   /nodes:
@@ -185,6 +205,8 @@ paths:
     get:
       description: lists node reports
       operationId: listReportsStandalone
+      parameters:
+        - $ref: "#/parameters/pilot"
       responses:
         "200":
           description: Success
@@ -234,6 +256,10 @@ paths:
   /reports/v2:
     x-swagger-router-controller: reports
     get:
+      parameters:
+        - $ref: "#/parameters/device_product"
+        - $ref: "#/parameters/device_version"
+        - $ref: "#/parameters/pilot"
       description: lists node reports
       operationId: listReportsCEFStandalone
       responses:
@@ -346,6 +372,8 @@ paths:
   /mspl:
     x-swagger-router-controller: msplconfig
     get:
+      parameters:
+        - $ref: "#/parameters/q_policy_id"
       description: get list of medium level policies
       operationId: listMspl
       responses:
@@ -407,6 +435,8 @@ paths:
   /configurations:
     x-swagger-router-controller: msplconfig
     get:
+      parameters:
+        - $ref: "#/parameters/q_mspl_id"
       description: get list of configurations
       operationId: listConfigurations
       responses:
@@ -496,6 +526,8 @@ definitions:
         type: string
       data:
         type: string
+      pilot:
+        type: ['string', 'null']
 
   ReportNoNode:
     allOf:
@@ -525,6 +557,8 @@ definitions:
         type: string
       extensions_list:
         type: string
+      pilot:
+        type: ['string', 'null']
 
   ReportCEFNoNode:
     allOf:
@@ -591,6 +625,8 @@ definitions:
         type: string
       data:
         type: string
+      policy_id:
+        type: ['string', 'null']
         
   MSPL:
     allOf:
@@ -616,6 +652,8 @@ definitions:
         type: string
       data:
         type: string
+      mspl_id:
+        type: ['string', 'null']
         
   Configuration:
     allOf:

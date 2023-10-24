@@ -1,0 +1,11 @@
+[wazuh_managers]
+10.44.19.237 ansible_ssh_user=centos public_ip=10.44.19.237 private_ip=10.44.19.237
+
+# [wazuh_agents]
+# 192.168.55.12 public_ip=192.168.55.12 ansible_ssh_user=root ansible_ssh_private_key_file=/service/id_rsa
+
+# [wazuh_managers:vars]
+# ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+# [wazuh_agents:vars]
+# ansible_ssh_common_args='-o StrictHostKeyChecking=no'

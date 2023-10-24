@@ -15,6 +15,8 @@ console.log(require('util').inspect(process.env,false,null));
 // K8S specific stuff
 let rabbitIP = process.env.CENTRAL_REPOSITORY_RMQ_SERVICE_HOST;
 let rabbitPort = process.env.CENTRAL_REPOSITORY_RMQ_SERVICE_PORT;
+let user = process.env.CENTRAL_REPOSITORY_RMQ_SERVICE_USER;
+let pass = process.env.CENTRAL_REPOSITORY_RMQ_SERVICE_PASS;
 
 var conf = extend(true, require('./config/default.json'), require('./config/config.json'));
 
@@ -30,7 +32,9 @@ var config = {
 db.init().then(() => {
   rabbitClientController.init({
     host: rabbitIP,
-    port: rabbitPort
+    port: rabbitPort,
+    username: user,
+    password: pass
   }).then(() => {
     SwaggerExpress.create(config, function(err, swaggerExpress) {
       if (err) { throw err; }
